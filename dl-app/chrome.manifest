@@ -1,0 +1,3 @@
+content wangluoxuetang content/
+
+overlay chrome://browser/content/browser.xul chrome://wangluoxuetang/content/browserOverlay.xul
