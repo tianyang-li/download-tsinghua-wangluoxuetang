@@ -17,6 +17,6 @@ xmlns:em="http://www.mozilla.org/2004/em-rdf#">
         <em:name>清华网络学堂批量下载工具</em:name>
         <em:description>批量下载清华网络学堂里面的内容</em:description>
         <em:homepageURL>http://li-tianyang.com</em:homepageURL>
-        <em:creator>Tianyang Li 李天阳</em:creator>
+        <em:creator>李天阳</em:creator>
     </Description>
 </RDF>

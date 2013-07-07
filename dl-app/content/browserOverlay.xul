@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<overlay id="wangluoxuetang-browser-overlay"
+<!DOCTYPE overlay SYSTEM
+"chrome://wangluoxuetang/locale/browserOverlay.dtd">
+<overlay id="wlxt-browser-overlay"
 xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-
-    <menupopup id="menu_ToolsPopup">
-        <menu id="wangluoxuetang-menu" label="下载网络学堂">
-            <menupopup>
-                <menuitem label="开始下载"
-                oncommand=";" />
-                <menuitem label="寻求帮助"
-                oncommand=";" />
-                <menuitem label="问题反馈"
-                oncommand=";" />
-            </menupopup>
-        </menu>
-    </menupopup>
-
+	<script type="application/x-javascript"
+	src="chrome://wangluoxuetang/content/wangluoxuetang.js" />
+	<stringbundleset id="stringbundleset">
+		<stringbundle id="wlxt-string-bundle"
+		src="chrome://wangluoxuetang/locale/browserOverlay.properties" />
+	</stringbundleset>
+	<menupopup id="menu_ToolsPopup">
+		<menu id="wlxt-menu" label="下载网络学堂">
+			<menupopup>
+				<menuitem label="开始下载"
+				oncommand=";" />
+				<menuitem label="寻求帮助"
+				oncommand="WLXT.BrowserOverlay.seekHelp(event);" />
+				<menuitem label="问题反馈"
+				oncommand=";" />
+			</menupopup>
+		</menu>
+	</menupopup>
 </overlay>
