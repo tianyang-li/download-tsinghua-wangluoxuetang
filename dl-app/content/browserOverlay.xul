@@ -13,11 +13,11 @@ xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 		<menu id="wlxt-menu" label="下载网络学堂">
 			<menupopup>
 				<menuitem label="开始下载"
-				oncommand=";" />
+				oncommand="WLXT.BrowserOverlay.startDownload(event);" />
 				<menuitem label="寻求帮助"
 				oncommand="WLXT.BrowserOverlay.seekHelp(event);" />
 				<menuitem label="问题反馈"
-				oncommand=";" />
+				oncommand="WLXT.BrowserOverlay.feedback(event);" />
 			</menupopup>
 		</menu>
 	</menupopup>
