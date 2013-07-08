@@ -34,11 +34,11 @@ WLXT.DowloadData.modifyLearnLogin = function() {
 WLXT.BrowserOverlay = {
 
     seekHelp : function(aEvent) {
-        window.open("chrome://wangluoxuetang/content/seekHelp.xul", "wlxt-seek-help", "chrome,centerscreen");
+        window.openDialog("chrome://wangluoxuetang/content/seekHelp.xul", "wlxt-seek-help", "chrome,centerscreen");
     },
 
     feedback : function(aEvent) {
-        window.open("chrome://wangluoxuetang/content/feedback.xul", "wlxt-feedback", "chrome,centerscreen");
+        window.openDialog("chrome://wangluoxuetang/content/feedback.xul", "wlxt-feedback", "chrome,centerscreen");
     },
 
     startDownload : function(aEvent) {

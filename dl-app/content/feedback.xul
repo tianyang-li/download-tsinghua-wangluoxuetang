@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="chrome://global/skin/global.css" type="text/css"?>
+<!DOCTYPE overlay SYSTEM
+"chrome://wangluoxuetang/locale/browserOverlay.dtd">
+<dialog id="wlxt-feedback" title="问题反馈"
+xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+buttons="accept"
+buttonlabelaccept="OK">
+	<hbox>
+		<description>
+			&wlxt.feedback.message;
+		</description>
+	</hbox>
+</dialog>

@@ -1,0 +1,3 @@
+<!ENTITY email-link '<label href="mailto:ty@li-tianyang.com" class="text-link">ty@li-tianyang.com</label>'>
+<!ENTITY wlxt.seek-help.message '如果需要更多的帮助, 请和李天阳 (&email-link;) 联系.'>
+<!ENTITY wlxt.feedback.message '如果有任何反馈, 请和李天阳 (&email-link;) 联系.'>
