@@ -5,13 +5,25 @@ if ("undefined" == typeof (WLXT)) {
 WLXT.DowloadData = {};
 
 WLXT.DowloadData.onPageLoad = function(aEvent) {
-    if (aEvent.target.URL == "http://learn.tsinghua.edu.cn/") {
-        /*
-         * change DOM of WLXT login page
-         */
-        var loginTableBody = aEvent.target.getElementsByTagName('body')[0].getElementsByTagName('table')[4].getElementsByTagName('tbody')[0];
-        var notifyUserCell = loginTableBody.insertRow(0).insertCell(0);
-        notifyUserCell.innerHTML = '<b style="color: red">下载网络学堂从这里登录</b>';
+
+    /*
+     * TODO: change how page is detected?
+     */
+    switch (aEvent.target.URL) {
+
+        case "http://learn.tsinghua.edu.cn/":
+            /*
+             * change DOM of WLXT login page
+             */
+            var loginTableBody = aEvent.target.getElementsByTagName('body')[0].getElementsByTagName('table')[4].getElementsByTagName('tbody')[0];
+            var notifyUserCell = loginTableBody.insertRow(0).insertCell(0);
+            notifyUserCell.innerHTML = '<b style="color: red">下载网络学堂从这里登录</b>';
+            break;
+
+        case "http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/MyCourse.jsp?typepage=2":
+
+            break;
+
     }
 };
 
