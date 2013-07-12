@@ -37,7 +37,10 @@ WLXT.DowloadData.init = function() {
  * open learn.tsinghua.edu.cn in a new window
  */
 WLXT.DowloadData.openLearn = function() {
-    var strWindowFeatures = "";
+    /*
+     * TODO: use some better $strWindowFeatures?
+     */
+    var strWindowFeatures = "location=no";
     window.open("http://learn.tsinghua.edu.cn", "wlxt_dl_window", strWindowFeatures);
 };
 
