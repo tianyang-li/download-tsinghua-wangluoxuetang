@@ -1,10 +1,51 @@
 if ("undefined" == typeof (WLXT)) {
-    var WLXT = {};
+    var WLXT = {
+    };
 };
 
-WLXT.DowloadData = {};
+WLXT.BrowserOverlay = {
 
-WLXT.DowloadData.onPageLoad = function(aEvent) {
+    seekHelp : function(aEvent) {
+        window.openDialog("chrome://wangluoxuetang/content/seekHelp.xul", "wlxt-seek-help", "chrome,centerscreen");
+    },
+
+    feedback : function(aEvent) {
+        window.openDialog("chrome://wangluoxuetang/content/feedback.xul", "wlxt-feedback", "chrome,centerscreen");
+    },
+
+    startDownload : function(aEvent) {
+        WLXT.DownloadData.openLearn();
+    }
+};
+
+WLXT.DownloadData = {
+    /*
+    * TODO: use some better $strWindowFeatures?
+    */
+    //XXX:strWindowFeatures : "location=no",
+    strWindowFeatures : "",
+
+    /*
+     * stores each class's information
+     */
+    ClassDatum : function() {
+        this.URL = "";
+        this.name = "";
+    },
+};
+
+WLXT.DownloadData.classRowToDatum = function(classRow) {
+    var classDatum = new WLXT.DownloadData.ClassDatum();
+    var classLink = classRow.getElementsByTagName("a")[0];
+    classDatum.URL = classLink.href;
+    classDatum.name = classLink.innerHTML;
+    Application.console.log(classDatum.URL + ", " + classDatum.name);
+    return classDatum;
+}
+
+WLXT.DownloadData.onPageLoad = function(aEvent) {
+
+    //alert(aEvent.target.URL);
 
     /*
      * TODO: change how page is detected?
@@ -20,48 +61,40 @@ WLXT.DowloadData.onPageLoad = function(aEvent) {
             notifyUserCell.innerHTML = '<b style="color: red">下载网络学堂从这里登录</b>';
             break;
 
-        case "http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/MyCourse.jsp?typepage=2":
+        case "http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/mainstudent.jsp":
+            window.open("http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/MyCourse.jsp?typepage=2", "wlxt_list_window", WLXT.DownloadData.strWindowFeatures);
+            break;
 
+        case "http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/MyCourse.jsp?typepage=2":
+            /*
+             * change DOM of course page
+             */
+            var classRows = aEvent.target.getElementById("info_1").rows;
+            var classInfos = Array(classRows.length - 2);
+            for (var i = 0; i < classRows.length - 2; ++i) {
+                classInfos[i] = WLXT.DownloadData.classRowToDatum(classRows[i + 2]);
+            }
             break;
 
     }
 };
 
-WLXT.DowloadData.init = function() {
+WLXT.DownloadData.init = function() {
     if (gBrowser) {
-        gBrowser.addEventListener("DOMContentLoaded", WLXT.DowloadData.onPageLoad, false);
+        gBrowser.addEventListener("DOMContentLoaded", WLXT.DownloadData.onPageLoad, false);
     }
 };
 
 /*
  * open learn.tsinghua.edu.cn in a new window
  */
-WLXT.DowloadData.openLearn = function() {
-    /*
-     * TODO: use some better $strWindowFeatures?
-     */
-    var strWindowFeatures = "location=no";
-    window.open("http://learn.tsinghua.edu.cn", "wlxt_dl_window", strWindowFeatures);
-};
-
-WLXT.BrowserOverlay = {
-
-    seekHelp : function(aEvent) {
-        window.openDialog("chrome://wangluoxuetang/content/seekHelp.xul", "wlxt-seek-help", "chrome,centerscreen");
-    },
-
-    feedback : function(aEvent) {
-        window.openDialog("chrome://wangluoxuetang/content/feedback.xul", "wlxt-feedback", "chrome,centerscreen");
-    },
-
-    startDownload : function(aEvent) {
-        WLXT.DowloadData.openLearn();
-    }
+WLXT.DownloadData.openLearn = function() {
+    window.open("http://learn.tsinghua.edu.cn", "wlxt_login_window", WLXT.DownloadData.strWindowFeatures);
 };
 
 window.addEventListener("load", function load(event) {
     window.removeEventListener("load", load, false);
     //remove listener, no longer needed
-    WLXT.DowloadData.init();
+    WLXT.DownloadData.init();
 }, false);
 
