@@ -1,3 +1,8 @@
+/*
+ * 李天阳 2013
+ * ty@li-tianyang.com
+ */
+
 if ("undefined" == typeof (WLXT)) {
     var WLXT = {
     };
@@ -34,18 +39,19 @@ WLXT.DownloadData = {
     },
 };
 
-WLXT.DownloadData.classRowToDatum = function(classRow) {
+WLXT.DownloadData.getClassNameURL = function(classRow) {
     var classDatum = new WLXT.DownloadData.ClassDatum();
     var classLink = classRow.getElementsByTagName("a")[0];
     classDatum.URL = classLink.href;
     classDatum.name = classLink.innerHTML;
-    Application.console.log(classDatum.URL + ", " + classDatum.name);
     return classDatum;
 }
 
-WLXT.DownloadData.onPageLoad = function(aEvent) {
+WLXT.DownloadData.downloadClass = function(classDatum) {
+    Application.console.log(classDatum.URL);
+}
 
-    //alert(aEvent.target.URL);
+WLXT.DownloadData.onPageLoad = function(aEvent) {
 
     /*
      * TODO: change how page is detected?
@@ -70,10 +76,11 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
              * change DOM of course page
              */
             var classRows = aEvent.target.getElementById("info_1").rows;
-            var classInfos = Array(classRows.length - 2);
+            var classData = Array(classRows.length - 2);
             for (var i = 0; i < classRows.length - 2; ++i) {
-                classInfos[i] = WLXT.DownloadData.classRowToDatum(classRows[i + 2]);
+                classData[i] = WLXT.DownloadData.getClassNameURL(classRows[i + 2]);
             }
+            classData.forEach(WLXT.DownloadData.downloadClass);
             break;
 
     }
