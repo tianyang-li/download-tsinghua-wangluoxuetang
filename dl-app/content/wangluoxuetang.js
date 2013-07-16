@@ -47,6 +47,8 @@ WLXT.DownloadData.getClassNameURL = function(classRow) {
     var classDatum = new WLXT.DownloadData.ClassDatum();
     var classLink = classRow.getElementsByTagName("a")[0];
     /*
+     * XXX: this might change over the years
+     *
      * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/course_locate.jsp?course_id=${id}
      */
     var getIDFromURLRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/lesson\/student\/course_locate\.jsp\?course_id\=(\d+)/;
@@ -56,6 +58,33 @@ WLXT.DownloadData.getClassNameURL = function(classRow) {
 }
 
 WLXT.DownloadData.downloadClass = function(classDatum) {
+    /*
+     * XXX: this might change over the years
+     *
+     * 课程公告
+     * http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/getnoteid_student.jsp?course_id=${id}
+     *
+     * 课程信息
+     * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/course_info.jsp?course_id=${id}
+     *
+     * 课程文件
+     * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/download.jsp?course_id=${id}
+     *
+     * 教学资源
+     * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/ware_list.jsp?course_id=${id}
+     *
+     * 课程作业
+     * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/hom_wk_brw.jsp?course_id=${id}
+     *
+     * 课程答疑
+     * http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/getbbsid_student.jsp?course_id=${id}
+     *
+     * 课程讨论
+     * http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/gettalkid_student.jsp?course_id=${id}
+     *
+     * 自由讨论区
+     * http://learn.tsinghua.edu.cn/MultiLanguage/public/discuss/main.jsp?course_id=${id}
+     */
 
 }
 
