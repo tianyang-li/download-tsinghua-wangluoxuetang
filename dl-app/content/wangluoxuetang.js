@@ -27,28 +27,36 @@ WLXT.DownloadData = {
     /*
     * TODO: use some better $strWindowFeatures?
     */
-    //XXX:strWindowFeatures : "location=no",
+    //strWindowFeatures : "location=no",//XXX:
     strWindowFeatures : "",
 
     /*
      * stores each class's information
      */
     ClassDatum : function() {
-        this.URL = "";
+        this.id = "";
         this.name = "";
+    },
+
+    escapeRegExp : function(string) {
+        return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
     },
 };
 
 WLXT.DownloadData.getClassNameURL = function(classRow) {
     var classDatum = new WLXT.DownloadData.ClassDatum();
     var classLink = classRow.getElementsByTagName("a")[0];
-    classDatum.URL = classLink.href;
+    /*
+     * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/course_locate.jsp?course_id=${id}
+     */
+    var getIDFromURLRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/lesson\/student\/course_locate\.jsp\?course_id\=(\d+)/;
+    classDatum.id = getIDFromURLRegex.exec(classLink.href).pop();
     classDatum.name = classLink.innerHTML;
     return classDatum;
 }
 
 WLXT.DownloadData.downloadClass = function(classDatum) {
-    Application.console.log(classDatum.URL);
+
 }
 
 WLXT.DownloadData.onPageLoad = function(aEvent) {
@@ -77,10 +85,14 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
              */
             var classRows = aEvent.target.getElementById("info_1").rows;
             var classData = Array(classRows.length - 2);
-            for (var i = 0; i < classRows.length - 2; ++i) {
+            for (var i = 0; i < classRows.length - 2; ++i) {//XXX
+                //for (var i = 0; i < 1; ++i) {
                 classData[i] = WLXT.DownloadData.getClassNameURL(classRows[i + 2]);
             }
             classData.forEach(WLXT.DownloadData.downloadClass);
+            break;
+
+        default:
             break;
 
     }
