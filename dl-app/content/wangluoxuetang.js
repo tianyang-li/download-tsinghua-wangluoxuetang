@@ -114,8 +114,8 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
              */
             var classRows = aEvent.target.getElementById("info_1").rows;
             var classData = Array(classRows.length - 2);
-            for (var i = 0; i < classRows.length - 2; ++i) {//XXX
-                //for (var i = 0; i < 1; ++i) {
+            //for (var i = 0; i < classRows.length - 2; ++i) {//XXX
+            for (var i = 0; i < 1; ++i) {
                 classData[i] = WLXT.DownloadData.getClassNameURL(classRows[i + 2]);
             }
             classData.forEach(WLXT.DownloadData.downloadClass);
