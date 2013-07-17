@@ -39,6 +39,10 @@ WLXT.DownloadData = {
     },
 
     escapeRegExp : function(string) {
+        /*
+         * taken from:
+         * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+         */
         return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
     },
 };
@@ -56,6 +60,20 @@ WLXT.DownloadData.getClassNameURL = function(classRow) {
     classDatum.name = classLink.innerHTML;
     return classDatum;
 }
+
+WLXT.DownloadData.PageType = {
+    /*
+     * ordered according to @WLXT.DownloadData.downloadClass
+     */
+    NOTE_ID : 0,
+    COURSE_INFO : 1,
+    DOWNLOAD : 2,
+    WARE_LIST : 3,
+    HOM_WK_BRW : 4,
+    BBS_ID_STUDENT : 5,
+    TALKID_STUDENT : 6,
+    DISCUSS_MAIN : 7,
+};
 
 WLXT.DownloadData.downloadClass = function(classDatum) {
     /*
@@ -86,6 +104,12 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
      * http://learn.tsinghua.edu.cn/MultiLanguage/public/discuss/main.jsp?course_id=${id}
      */
 
+}
+
+WLXT.DownloadData.checkPageType = function(aEvent) {
+    /*
+     * check to see which page was opened as listed in @WLXT.DownloadData.downloadClass
+     */
 }
 
 WLXT.DownloadData.onPageLoad = function(aEvent) {
