@@ -59,7 +59,7 @@ WLXT.DownloadData.getClassNameURL = function(classRow) {
     classDatum.id = getIDFromURLRegex.exec(classLink.href).pop();
     classDatum.name = classLink.innerHTML;
     return classDatum;
-}
+};
 
 WLXT.DownloadData.PageType = {
     /*
@@ -103,14 +103,22 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
      * 自由讨论区
      * http://learn.tsinghua.edu.cn/MultiLanguage/public/discuss/main.jsp?course_id=${id}
      */
+};
 
-}
-
-WLXT.DownloadData.checkPageType = function(aEvent) {
+WLXT.DownloadData.checkPageType = function(URL) {
     /*
      * check to see which page was opened as listed in @WLXT.DownloadData.downloadClass
      */
-}
+
+    var pageType = {
+        type : -1,
+        id : "",
+    };
+
+    var noteIDRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/public\/bbs\/getnoteid_student\.jsp\?course_id\=(\d+)/;
+
+    return pageType;
+};
 
 WLXT.DownloadData.onPageLoad = function(aEvent) {
 
@@ -138,15 +146,58 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
              * change DOM of course page
              */
             var classRows = aEvent.target.getElementById("info_1").rows;
-            var classData = Array(classRows.length - 2);
-            //for (var i = 0; i < classRows.length - 2; ++i) {//XXX
-            for (var i = 0; i < 1; ++i) {
-                classData[i] = WLXT.DownloadData.getClassNameURL(classRows[i + 2]);
+            var classData = {};
+            for (var i = 0; i < classRows.length - 2; ++i) {
+                var classDatum = WLXT.DownloadData.getClassNameURL(classRows[i + 2]);
+                classData[classDatum.id] = classDatum;
             }
-            classData.forEach(WLXT.DownloadData.downloadClass);
+            //XXX remove
+            var j = 0;
+            for (var courseID in classData) {
+                //XXX remove
+                if (j >= 1) {
+                    break;
+                }
+                j += 1;
+                WLXT.DownloadData.downloadClass(classData[courseID]);
+            }
+            aEvent.target.defaultView.close();
             break;
 
         default:
+
+            pageType = WLXT.DownloadData.checkPageType(aEvent.target.URL);
+            switch(pageType.URLType) {
+
+                case WLXT.DownloadData.PageType.NOTE_ID:
+                    break;
+
+                case WLXT.DownloadData.PageType.COURSE_INFO:
+                    break
+
+                case WLXT.DownloadData.PageType.DOWNLOAD:
+                    break;
+
+                case WLXT.DownloadData.PageType.WARE_LIST:
+                    break;
+
+                case WLXT.DownloadData.PageType.HOM_WK_BRW:
+                    break;
+
+                case WLXT.DownloadData.PageType.BBS_ID_STUDENT:
+                    break;
+
+                case WLXT.DownloadData.PageType.TALKID_STUDENT:
+                    break;
+
+                case WLXT.DownloadData.PageType.DISCUSS_MAIN:
+                    break;
+
+                default:
+                    break;
+
+            }
+
             break;
 
     }
