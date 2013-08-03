@@ -80,7 +80,11 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
      * XXX: this might change over the years
      *
      * 课程公告
-     * http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/getnoteid_student.jsp?course_id=${id}
+     * open this
+     *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/getnoteid_student.jsp?course_id=${id}
+     * to get this
+     *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/note_list_student.jsp?bbs_id=${bbs_id}&course_id=${course_id}
+     * XXX: what's bbs id?
      *
      * 课程信息
      * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/course_info.jsp?course_id=${id}
@@ -105,7 +109,7 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
      */
 };
 
-WLXT.DownloadData.checkPageType = function(URL) {
+WLXT.DownloadData.checkCoursePageType = function(URL) {
     /*
      * check to see which page was opened as listed in @WLXT.DownloadData.downloadClass
      */
@@ -114,8 +118,21 @@ WLXT.DownloadData.checkPageType = function(URL) {
         type : -1,
         id : "",
     };
+    var regexExec;
 
-    var noteIDRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/public\/bbs\/getnoteid_student\.jsp\?course_id\=(\d+)/;
+    var noteIDRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/public\/bbs\/note_list_student\.jsp\?bbs_id\=\d+&course_id\=(\d+)/;
+    if (( regexExec = noteIDRegex.exec(URL)) !== null) {
+        pageType.type = WLXT.DownloadData.PageType.NOTE_ID;
+        pageType.id = regexExec.pop();
+        return pageType;
+    }
+
+    var courseInfoRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/lesson\/student\/course_info\.jsp\?course_id\=(\d+)/;
+    if (( regexExec = courseInfoRegex.exec(URL)) !== null) {
+        pageType.type = WLXT.DownloadData.PageType.COURSE_INFO;
+        pageType.id = regexExec.pop();
+        return pageType;
+    }
 
     return pageType;
 };
@@ -161,13 +178,14 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                 j += 1;
                 WLXT.DownloadData.downloadClass(classData[courseID]);
             }
-            aEvent.target.defaultView.close();
+            //aEvent.target.defaultView.close();//XXX
             break;
 
         default:
 
-            pageType = WLXT.DownloadData.checkPageType(aEvent.target.URL);
-            switch(pageType.URLType) {
+            pageType = WLXT.DownloadData.checkCoursePageType(aEvent.target.URL);
+            Application.console.log(pageType.type);
+            switch(pageType.type) {
 
                 case WLXT.DownloadData.PageType.NOTE_ID:
                     break;
