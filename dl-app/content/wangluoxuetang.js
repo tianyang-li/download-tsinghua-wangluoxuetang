@@ -99,7 +99,10 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
      * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/hom_wk_brw.jsp?course_id=${id}
      *
      * 课程答疑
-     * http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/getbbsid_student.jsp?course_id=${id}
+     * open this
+     *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/getbbsid_student.jsp?course_id=${id}
+     * to get this
+     *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/bbs_list_student.jsp?bbs_id=${id}&course_id=${id}
      *
      * 课程讨论
      * http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/gettalkid_student.jsp?course_id=${id}
@@ -133,6 +136,37 @@ WLXT.DownloadData.checkCoursePageType = function(URL) {
         pageType.id = regexExec.pop();
         return pageType;
     }
+
+    var downloadRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/lesson\/student\/download\.jsp\?course_id\=(\d+)/;
+    if (( regexExec = downloadRegex.exec(URL)) !== null) {
+        pageType.type = WLXT.DownloadData.PageType.DOWNLOAD;
+        pageType.id = regexExec.pop();
+        return pageType;
+    }
+
+    var wareListRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/lesson\/student\/ware_list\.jsp\?course_id\=(\d+)/;
+    if (( regexExec = wareListRegex.exec(URL)) !== null) {
+        pageType.type = WLXT.DownloadData.PageType.WARE_LIST;
+        pageType.id = regexExec.pop();
+        return pageType;
+    }
+
+    var homWkBrwRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/lesson\/student\/hom_wk_brw\.jsp\?course_id\=(\d+)/;
+    if (( regexExec = homWkBrwRegex.exec(URL)) !== null) {
+        pageType.type = WLXT.DownloadData.PageType.HOM_WK_BRW;
+        pageType.id = regexExec.pop();
+        return pageType;
+    }
+
+    var bbsIDStudentRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/public\/bbs\/bbs_list_student\.jsp\?bbs_id\=\d+&course_id\=(\d+)/;
+    if (( regexExec = bbsIDStudentRegex.exec(URL)) !== null) {
+        pageType.type = WLXT.DownloadData.PageType.BBS_ID_STUDENT;
+        pageType.id = regexExec.pop();
+        return pageType;
+    }
+
+    var talkIDStudentRegex = /(\d+)/;
+    var discussMain = /(\d+)/;
 
     return pageType;
 };
