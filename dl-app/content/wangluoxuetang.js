@@ -105,7 +105,10 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
      *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/bbs_list_student.jsp?bbs_id=${id}&course_id=${id}
      *
      * 课程讨论
-     * http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/gettalkid_student.jsp?course_id=${id}
+     * open this
+     *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/gettalkid_student.jsp?course_id=${id}
+     * to get this
+     *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/talk_list_student.jsp?bbs_id=${id}&course_id=${id}
      *
      * 自由讨论区
      * http://learn.tsinghua.edu.cn/MultiLanguage/public/discuss/main.jsp?course_id=${id}
@@ -165,8 +168,19 @@ WLXT.DownloadData.checkCoursePageType = function(URL) {
         return pageType;
     }
 
-    var talkIDStudentRegex = /(\d+)/;
-    var discussMain = /(\d+)/;
+    var talkIDStudentRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/public\/bbs\/talk_list_student\.jsp\?bbs_id\=\d+&course_id\=(\d+)/;
+    if (( regexExec = talkIDStudentRegex.exec(URL)) !== null) {
+        pageType.type = WLXT.DownloadData.PageType.TALKID_STUDENT;
+        pageType.id = regexExec.pop();
+        return pageType;
+    }
+
+    var discussMainRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/public\/discuss\/main\.jsp\?course_id\=(\d+)/;
+    if (( regexExec = discussMainRegex.exec(URL)) !== null) {
+        pageType.type = WLXT.DownloadData.PageType.DISCUSS_MAIN;
+        pageType.id = regexExec.pop();
+        return pageType;
+    }
 
     return pageType;
 };
@@ -218,7 +232,6 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
         default:
 
             pageType = WLXT.DownloadData.checkCoursePageType(aEvent.target.URL);
-            Application.console.log(pageType.type);
             switch(pageType.type) {
 
                 case WLXT.DownloadData.PageType.NOTE_ID:
