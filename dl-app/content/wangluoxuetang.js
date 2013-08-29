@@ -51,7 +51,7 @@ WLXT.DownloadData.getClassNameURL = function(classRow) {
     var classDatum = new WLXT.DownloadData.ClassDatum();
     var classLink = classRow.getElementsByTagName("a")[0];
     /*
-     * XXX: this might change over the years
+     * TODO: this might change over the years
      *
      * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/course_locate.jsp?course_id=${id}
      */
@@ -77,15 +77,18 @@ WLXT.DownloadData.PageType = {
 
 WLXT.DownloadData.downloadClass = function(classDatum) {
     /*
-     * XXX: this might change over the years
+     * TODO: this might change over the years
      *
      * 课程公告
      * open this
      *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/getnoteid_student.jsp?course_id=${id}
      * to get this
      *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/note_list_student.jsp?bbs_id=${bbs_id}&course_id=${course_id}
-     * XXX: what's bbs id?
-     *
+     * TODO: what's bbs id?
+     */
+    window.open("http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/getnoteid_student.jsp?course_id=" + classDatum.id);
+
+    /*
      * 课程信息
      * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/course_info.jsp?course_id=${id}
      *
@@ -113,6 +116,7 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
      * 自由讨论区
      * http://learn.tsinghua.edu.cn/MultiLanguage/public/discuss/main.jsp?course_id=${id}
      */
+
 };
 
 WLXT.DownloadData.checkCoursePageType = function(URL) {
@@ -216,10 +220,10 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                 var classDatum = WLXT.DownloadData.getClassNameURL(classRows[i + 2]);
                 classData[classDatum.id] = classDatum;
             }
-            //XXX remove
+            //XXX remove next line and related
             var j = 0;
             for (var courseID in classData) {
-                //XXX remove
+                //XXX remove next line and related
                 if (j >= 1) {
                     break;
                 }
@@ -235,10 +239,19 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
             switch(pageType.type) {
 
                 case WLXT.DownloadData.PageType.NOTE_ID:
+                    var notesRows = aEvent.target.getElementById("table_box").rows;
+                    if (notesRows.length == 0) {
+                        //TODO: remove this?
+                        throw "length of NOTE_ID notesRows is 0!";
+                    }
+                    for (var i = 1; i != notesRows.length; i++) {
+                        Application.console.log(notesRows[i].cells.length);
+                    }
+                    //aEvent.target.defaultView.close();//XXX
                     break;
 
                 case WLXT.DownloadData.PageType.COURSE_INFO:
-                    break
+                    break;
 
                 case WLXT.DownloadData.PageType.DOWNLOAD:
                     break;
