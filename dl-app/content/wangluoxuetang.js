@@ -189,6 +189,15 @@ WLXT.DownloadData.checkCoursePageType = function(URL) {
     return pageType;
 };
 
+WLXT.DownloadData.NoteID = {
+    /*
+     * NOTE_ID : 0,
+     */
+
+    downloadNote : function(noteMetaInfo) {
+    },
+};
+
 WLXT.DownloadData.onPageLoad = function(aEvent) {
 
     /*
@@ -245,7 +254,14 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                         throw "length of NOTE_ID notesRows is 0!";
                     }
                     for (var i = 1; i != notesRows.length; i++) {
-                        Application.console.log(notesRows[i].cells.length);
+                        var noteMetaInfo = {
+                            serial : notesRows[i].cells[0].innerHTML,
+                            title : notesRows[i].cells[1].getElementsByTagName("a")[0].innerHTML,
+                            publisher : notesRows[i].cells[2].innerHTML,
+                            date : notesRows[i].cells[3].innerHTML,
+                            URL : notesRows[i].cells[1].getElementsByTagName("a")[0].href,
+                        };
+                        WLXT.DownloadData.NoteID.downloadNote(noteMetaInfo);
                     }
                     //aEvent.target.defaultView.close();//XXX
                     break;
