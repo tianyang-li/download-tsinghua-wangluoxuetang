@@ -3,6 +3,8 @@
  * ty@li-tianyang.com
  */
 
+Components.utils.import("resource://gre/modules/FileUtils.jsm");
+
 if ("undefined" == typeof (WLXT)) {
     var WLXT = {
     };
@@ -45,6 +47,8 @@ WLXT.DownloadData = {
          */
         return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
     },
+
+    dlDir : null,
 };
 
 WLXT.DownloadData.getClassNameURL = function(classRow) {
@@ -124,6 +128,10 @@ WLXT.DownloadData.checkCoursePageType = function(URL) {
      * check to see which page was opened as listed in @WLXT.DownloadData.downloadClass
      */
 
+    /*
+     * TODO: speed this up?
+     */
+
     var pageType = {
         type : -1,
         id : "",
@@ -189,15 +197,6 @@ WLXT.DownloadData.checkCoursePageType = function(URL) {
     return pageType;
 };
 
-WLXT.DownloadData.NoteID = {
-    /*
-     * NOTE_ID : 0,
-     */
-
-    downloadNote : function(noteMetaInfo) {
-    },
-};
-
 WLXT.DownloadData.onPageLoad = function(aEvent) {
 
     /*
@@ -205,6 +204,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
      */
     switch (aEvent.target.URL) {
 
+        // only for exact matches
         case "http://learn.tsinghua.edu.cn/":
             /*
              * change DOM of WLXT login page
@@ -247,6 +247,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
             pageType = WLXT.DownloadData.checkCoursePageType(aEvent.target.URL);
             switch(pageType.type) {
 
+                // for regex matches
                 case WLXT.DownloadData.PageType.NOTE_ID:
                     var notesRows = aEvent.target.getElementById("table_box").rows;
                     if (notesRows.length == 0) {
@@ -261,7 +262,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                             date : notesRows[i].cells[3].innerHTML,
                             URL : notesRows[i].cells[1].getElementsByTagName("a")[0].href,
                         };
-                        WLXT.DownloadData.NoteID.downloadNote(noteMetaInfo);
+                        window.open(noteMetaInfo.URL);
                     }
                     //aEvent.target.defaultView.close();//XXX
                     break;
@@ -288,6 +289,10 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     break;
 
                 default:
+
+                    //XXX remove this
+                    Application.console.log(aEvent.target.URL);
+
                     break;
 
             }
@@ -308,6 +313,8 @@ WLXT.DownloadData.init = function() {
  */
 WLXT.DownloadData.openLearn = function() {
     window.open("http://learn.tsinghua.edu.cn", "wlxt_login_window", WLXT.DownloadData.strWindowFeatures);
+
+    WLXT.DownloadData.dlDir = FileUtils.getDir("DfltDwnld", ["wlxt"], true);
 };
 
 window.addEventListener("load", function load(event) {
