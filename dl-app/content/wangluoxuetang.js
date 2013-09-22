@@ -80,6 +80,7 @@ WLXT.DownloadData.PageType = {
 };
 
 WLXT.DownloadData.downloadClass = function(classDatum) {
+
     /*
      * TODO: this might change over the years
      *
@@ -211,7 +212,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
              */
             var loginTableBody = aEvent.target.getElementsByTagName('body')[0].getElementsByTagName('table')[4].getElementsByTagName('tbody')[0];
             var notifyUserCell = loginTableBody.insertRow(0).insertCell(0);
-            notifyUserCell.innerHTML = '<b style="color: red">下载网络学堂从这里登录</b>';
+            notifyUserCell.innerHTML = '<strong style="color: red">下载网络学堂从这里登录</strong>';
             break;
 
         case "http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/mainstudent.jsp":
@@ -244,7 +245,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
         default:
 
-            pageType = WLXT.DownloadData.checkCoursePageType(aEvent.target.URL);
+            var pageType = WLXT.DownloadData.checkCoursePageType(aEvent.target.URL);
             switch(pageType.type) {
 
                 // for regex matches
