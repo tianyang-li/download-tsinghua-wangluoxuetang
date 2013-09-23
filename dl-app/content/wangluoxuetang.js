@@ -48,7 +48,15 @@ WLXT.DownloadData = {
         return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
     },
 
+    /*
+     * download directory nsIFile
+     */
     dlDir : null,
+
+    /*
+     * keeps stuff for each class while downloading
+     */
+    dlHelper : {},
 };
 
 WLXT.DownloadData.getClassNameURL = function(classRow) {
