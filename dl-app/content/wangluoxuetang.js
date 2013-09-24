@@ -51,7 +51,7 @@ WLXT.DownloadData = {
     /*
      * download directory nsIFile
      */
-    dlDir : null,
+    dlDir : "PPP",
 
     /*
      * keeps stuff for each class while downloading
