@@ -55,8 +55,19 @@ WLXT.DownloadData = {
 
     /*
      * keeps stuff for each class while downloading
+     *
+     * dlHelper[courseID] is a DlInfo
      */
     dlHelper : {},
+
+    /*
+     * stores download info for each course
+     * such as
+     *     * download dir
+     */
+    DlInfo : function() {
+        this.dlDir = null;
+    },
 };
 
 WLXT.DownloadData.getClassNameURL = function(classRow) {
@@ -88,6 +99,10 @@ WLXT.DownloadData.PageType = {
 };
 
 WLXT.DownloadData.downloadClass = function(classDatum) {
+    WLXT.DownloadData.dlHelper[classDatum.id] = new WLXT.DownloadData.DlInfo();
+    WLXT.DownloadData.dlHelper[classDatum.id].dlDir = WLXT.DownloadData.dlDir.clone();
+    WLXT.DownloadData.dlHelper[classDatum.id].dlDir.append(classDatum.id);
+    WLXT.DownloadData.dlHelper[classDatum.id].dlDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0666", 8));
 
     /*
      * TODO: this might change over the years
