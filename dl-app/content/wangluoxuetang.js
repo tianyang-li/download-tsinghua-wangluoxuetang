@@ -4,6 +4,7 @@
  */
 
 Components.utils.import("resource://gre/modules/FileUtils.jsm");
+Components.utils.import("resource://modules/WLXTUtils.jsm");
 
 if ("undefined" == typeof (WLXT)) {
     var WLXT = {
@@ -47,27 +48,6 @@ WLXT.DownloadData = {
          */
         return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
     },
-
-    /*
-     * download directory nsIFile
-     */
-    dlDir : "PPP",
-
-    /*
-     * keeps stuff for each class while downloading
-     *
-     * dlHelper[courseID] is a DlInfo
-     */
-    dlHelper : {},
-
-    /*
-     * stores download info for each course
-     * such as
-     *     * download dir
-     */
-    DlInfo : function() {
-        this.dlDir = null;
-    },
 };
 
 WLXT.DownloadData.getClassNameURL = function(classRow) {
@@ -99,10 +79,10 @@ WLXT.DownloadData.PageType = {
 };
 
 WLXT.DownloadData.downloadClass = function(classDatum) {
-    WLXT.DownloadData.dlHelper[classDatum.id] = new WLXT.DownloadData.DlInfo();
-    WLXT.DownloadData.dlHelper[classDatum.id].dlDir = WLXT.DownloadData.dlDir.clone();
-    WLXT.DownloadData.dlHelper[classDatum.id].dlDir.append(classDatum.id);
-    WLXT.DownloadData.dlHelper[classDatum.id].dlDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0666", 8));
+    WLXTUtils.dlHelper[classDatum.id] = new WLXTUtils.ClassHelper();
+    WLXTUtils.dlHelper[classDatum.id].dir = WLXTUtils.dlDir.clone();
+    WLXTUtils.dlHelper[classDatum.id].dir.append(classDatum.id);
+    WLXTUtils.dlHelper[classDatum.id].dir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0666", 8));
 
     /*
      * TODO: this might change over the years
@@ -338,7 +318,7 @@ WLXT.DownloadData.init = function() {
 WLXT.DownloadData.openLearn = function() {
     window.open("http://learn.tsinghua.edu.cn", "wlxt_login_window", WLXT.DownloadData.strWindowFeatures);
 
-    WLXT.DownloadData.dlDir = FileUtils.getDir("DfltDwnld", ["wlxt"], true);
+    WLXTUtils.dlDir = FileUtils.getDir("DfltDwnld", ["wlxt"], true);
 };
 
 window.addEventListener("load", function load(event) {

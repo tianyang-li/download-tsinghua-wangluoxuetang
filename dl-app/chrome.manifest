@@ -2,3 +2,5 @@ content wangluoxuetang content/
 locale wangluoxuetang en-US locale/en-US/
 
 overlay chrome://browser/content/browser.xul chrome://wangluoxuetang/content/browserOverlay.xul
+
+resource modules modules/

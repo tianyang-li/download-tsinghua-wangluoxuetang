@@ -1,0 +1,14 @@
+https://developer.mozilla.org/en-US/docs
+
+http://w3schools.com/jsref/dom_obj_event.asp
+
+http://w3schools.com/jsref/dom_obj_attributes.asp
+
+http://w3schools.com/jsref/dom_obj_all.asp
+
+http://w3schools.com/jsref/dom_obj_document.asp
+
+http://w3schools.com/jsref/default.asp
+
+function escapeRegExp(s) {return s.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");}
+
