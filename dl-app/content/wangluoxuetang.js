@@ -82,7 +82,7 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
     WLXTUtils.dlHelper[classDatum.id] = new WLXTUtils.ClassHelper();
     WLXTUtils.dlHelper[classDatum.id].dir = WLXTUtils.dlDir.clone();
     WLXTUtils.dlHelper[classDatum.id].dir.append(classDatum.id);
-    WLXTUtils.dlHelper[classDatum.id].dir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0666", 8));
+    WLXTUtils.dlHelper[classDatum.id].dir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0600", 8));
 
     /*
      * TODO: this might change over the years
@@ -229,9 +229,13 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
              */
             var classRows = aEvent.target.getElementById("info_1").rows;
             var classData = {};
+            var classDirFile = WLXTUtils.dlDir.clone();
+            classDirFile.append("course_id.csv");
+            classDirFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
             for (var i = 0; i < classRows.length - 2; ++i) {
                 var classDatum = WLXT.DownloadData.getClassNameURL(classRows[i + 2]);
                 classData[classDatum.id] = classDatum;
+                //XXX:TODO:XXX:TODO
             }
             //XXX remove next line and related
             var j = 0;
