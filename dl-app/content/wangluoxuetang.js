@@ -225,7 +225,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
         case "http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/MyCourse.jsp?typepage=2":
             /*
-             * change DOM of course page
+             * get course listing
              */
             var classRows = aEvent.target.getElementById("info_1").rows;
             var classData = {};
