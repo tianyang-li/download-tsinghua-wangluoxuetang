@@ -60,7 +60,7 @@ WLXT.DownloadData.getClassNameURL = function(classRow) {
      */
     var getIDFromURLRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/lesson\/student\/course_locate\.jsp\?course_id\=(\d+)/;
     classDatum.id = getIDFromURLRegex.exec(classLink.href).pop();
-    classDatum.name = classLink.innerHTML;
+    classDatum.name = classLink.innerHTML.trim();
     return classDatum;
 };
 
@@ -229,14 +229,23 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
              */
             var classRows = aEvent.target.getElementById("info_1").rows;
             var classData = {};
+
             var classDirFile = WLXTUtils.dlDir.clone();
             classDirFile.append("course_id.csv");
             classDirFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+            var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+            foStream.init(classDirFile, -1, parseInt("0600", 8), 0);
+            var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+            converter.init(foStream, "UTF-8", 0, 0);
+
             for (var i = 0; i < classRows.length - 2; ++i) {
                 var classDatum = WLXT.DownloadData.getClassNameURL(classRows[i + 2]);
                 classData[classDatum.id] = classDatum;
-                //XXX:TODO:XXX:TODO
+                converter.writeString("\"" + classDatum.id + "\",\"" + classDatum.name + "\"" + "\n");
             }
+
+            converter.close();
+
             //XXX remove next line and related
             var j = 0;
             for (var courseID in classData) {
