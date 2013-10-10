@@ -76,6 +76,11 @@ WLXT.DownloadData.PageType = {
     BBS_ID_STUDENT : 5,
     TALKID_STUDENT : 6,
     DISCUSS_MAIN : 7,
+
+    /*
+     * 课程公告
+     */
+    NOTE_REPLY : 8,
 };
 
 WLXT.DownloadData.downloadClass = function(classDatum) {
@@ -149,8 +154,14 @@ WLXT.DownloadData.checkCoursePageType = function(URL) {
         return pageType;
     }
 
-    var noteReplyRegex;
-    /* http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/note_reply.jsp?bbs_type=%E8%AF%BE%E7%A8%8B%E5%85%AC%E5%91%8A&id=1322297&course_id=94815 */
+    /* http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/note_reply.jsp?bbs_type=课程公告&id={POST_ID?}&course_id={COURSE_ID?} */
+    var noteReplyRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/public\/bbs\/note_reply\.jsp\?bbs_type\=\S+&id\=(\d+)&course_id\=(\d+)/;
+    if (( regexExec = noteReplyRegex.exec(URL)) !== null) {
+        pageType.type = WLXT.DownloadData.PageType.NOTE_REPLY;
+        pageType["course_id"] = regexExec.pop();
+        pageType.id = regexExec.pop();
+        return pageType;
+    }
 
     var courseInfoRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/lesson\/student\/course_info\.jsp\?course_id\=(\d+)/;
     if (( regexExec = courseInfoRegex.exec(URL)) !== null) {
@@ -286,6 +297,10 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                         window.open(noteMetaInfo.URL);
                     }
                     //aEvent.target.defaultView.close();//XXX
+                    break;
+
+                case WLXT.DownloadData.PageType.NOTE_REPLY:
+
                     break;
 
                 case WLXT.DownloadData.PageType.COURSE_INFO:
