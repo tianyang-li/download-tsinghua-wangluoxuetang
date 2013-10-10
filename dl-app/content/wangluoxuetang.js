@@ -149,6 +149,9 @@ WLXT.DownloadData.checkCoursePageType = function(URL) {
         return pageType;
     }
 
+    var noteReplyRegex;
+    /* http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/note_reply.jsp?bbs_type=%E8%AF%BE%E7%A8%8B%E5%85%AC%E5%91%8A&id=1322297&course_id=94815 */
+
     var courseInfoRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/lesson\/student\/course_info\.jsp\?course_id\=(\d+)/;
     if (( regexExec = courseInfoRegex.exec(URL)) !== null) {
         pageType.type = WLXT.DownloadData.PageType.COURSE_INFO;
@@ -233,6 +236,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
             var classDirFile = WLXTUtils.dlDir.clone();
             classDirFile.append("course_id.csv");
             classDirFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+
             var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
             foStream.init(classDirFile, -1, parseInt("0600", 8), 0);
             var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
