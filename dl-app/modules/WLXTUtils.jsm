@@ -13,6 +13,11 @@ var WLXTUtils = {
          * particular class
          */
         this.dir = null;
+
+        /*
+         * 课程公告
+         */
+        this.kcggDir = null;
     },
 
     /*

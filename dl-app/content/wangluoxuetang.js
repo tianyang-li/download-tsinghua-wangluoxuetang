@@ -87,7 +87,7 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
     WLXTUtils.dlHelper[classDatum.id] = new WLXTUtils.ClassHelper();
     WLXTUtils.dlHelper[classDatum.id].dir = WLXTUtils.dlDir.clone();
     WLXTUtils.dlHelper[classDatum.id].dir.append(classDatum.id);
-    WLXTUtils.dlHelper[classDatum.id].dir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0600", 8));
+    WLXTUtils.dlHelper[classDatum.id].dir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
 
     /*
      * TODO: this might change over the years
@@ -158,7 +158,7 @@ WLXT.DownloadData.checkCoursePageType = function(URL) {
     var noteReplyRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/public\/bbs\/note_reply\.jsp\?bbs_type\=\S+&id\=(\d+)&course_id\=(\d+)/;
     if (( regexExec = noteReplyRegex.exec(URL)) !== null) {
         pageType.type = WLXT.DownloadData.PageType.NOTE_REPLY;
-        pageType["course_id"] = regexExec.pop();
+        pageType["courseID"] = regexExec.pop();
         pageType.id = regexExec.pop();
         return pageType;
     }
@@ -281,6 +281,10 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
                 // for regex matches
                 case WLXT.DownloadData.PageType.NOTE_ID:
+                    WLXTUtils.dlHelper[pageType.id].kcggDir = WLXTUtils.dlHelper[pageType.id].dir.clone();
+                    WLXTUtils.dlHelper[pageType.id].kcggDir.append("kcgg");
+                    WLXTUtils.dlHelper[pageType.id].kcggDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+
                     var notesRows = aEvent.target.getElementById("table_box").rows;
                     if (notesRows.length == 0) {
                         //TODO: remove this?
