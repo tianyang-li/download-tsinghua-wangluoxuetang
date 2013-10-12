@@ -261,6 +261,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
             converter.close();
 
+            //XXX: reduce the number of open windows, save memory
             //XXX remove next line and related
             var j = 0;
             for (var courseID in classData) {
@@ -314,7 +315,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     }
 
                     converter.close();
-                    //aEvent.target.defaultView.close();//XXX
+                    aEvent.target.defaultView.close();
                     break;
 
                 case WLXT.DownloadData.PageType.NOTE_REPLY:
@@ -323,7 +324,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     var noteContent = noteTable.getElementsByTagName("td")[3].innerHTML.trim();
 
                     var noteFile = WLXTUtils.dlHelper[pageType.courseID].kcggDir.clone();
-                    noteFile.append(pageType.id + ".txt");
+                    noteFile.append(pageType.id + ".html");
                     noteFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
 
                     var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
