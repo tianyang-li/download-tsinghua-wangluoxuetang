@@ -285,6 +285,15 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     WLXTUtils.dlHelper[pageType.id].kcggDir.append("kcgg");
                     WLXTUtils.dlHelper[pageType.id].kcggDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
 
+                    var kcggCSV = WLXTUtils.dlHelper[pageType.id].kcggDir.clone();
+                    kcggCSV.append("kcgg.csv");
+                    kcggCSV.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+
+                    var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+                    foStream.init(kcggCSV, -1, parseInt("0600", 8), 0);
+                    var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+                    converter.init(foStream, "UTF-8", 0, 0);
+
                     var notesRows = aEvent.target.getElementById("table_box").rows;
                     if (notesRows.length == 0) {
                         //TODO: remove this?
@@ -292,19 +301,40 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     }
                     for (var i = 1; i != notesRows.length; i++) {
                         var noteMetaInfo = {
-                            serial : notesRows[i].cells[0].innerHTML,
-                            title : notesRows[i].cells[1].getElementsByTagName("a")[0].innerHTML,
-                            publisher : notesRows[i].cells[2].innerHTML,
-                            date : notesRows[i].cells[3].innerHTML,
-                            URL : notesRows[i].cells[1].getElementsByTagName("a")[0].href,
+                            serial : notesRows[i].cells[0].innerHTML.trim(),
+                            title : notesRows[i].cells[1].getElementsByTagName("a")[0].innerHTML.trim(),
+                            publisher : notesRows[i].cells[2].innerHTML.trim(),
+                            date : notesRows[i].cells[3].innerHTML.trim(),
+                            URL : notesRows[i].cells[1].getElementsByTagName("a")[0].href.trim(),
                         };
+                        var noteReplyRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/public\/bbs\/note_reply\.jsp\?bbs_type\=\S+&id\=(\d+)&course_id\=\d+/;
+                        var noteID = noteReplyRegex.exec(noteMetaInfo.URL).pop();
+                        converter.writeString("\"" + noteID + "\",\"" + noteMetaInfo.serial + "\",\"" + noteMetaInfo.title + "\",\"" + noteMetaInfo.publisher + "\",\"" + noteMetaInfo.date + "\"");
                         window.open(noteMetaInfo.URL);
                     }
+
+                    converter.close();
                     //aEvent.target.defaultView.close();//XXX
                     break;
 
                 case WLXT.DownloadData.PageType.NOTE_REPLY:
+                    var noteTable = aEvent.target.getElementById("table_box");
+                    var noteTitle = noteTable.getElementsByTagName("td")[1].innerHTML.trim();
+                    var noteContent = noteTable.getElementsByTagName("td")[3].innerHTML.trim();
 
+                    var noteFile = WLXTUtils.dlHelper[pageType.courseID].kcggDir.clone();
+                    noteFile.append(pageType.id + ".txt");
+                    noteFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+
+                    var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+                    foStream.init(noteFile, -1, parseInt("0600", 8), 0);
+                    var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+                    converter.init(foStream, "UTF-8", 0, 0);
+
+                    converter.writeString("<p>" + noteTitle + "</p>\n\n<p>" + noteContent + "</p>");
+
+                    converter.close();
+                    aEvent.target.defaultView.close();
                     break;
 
                 case WLXT.DownloadData.PageType.COURSE_INFO:
