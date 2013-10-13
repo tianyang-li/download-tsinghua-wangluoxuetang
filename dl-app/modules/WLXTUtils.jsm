@@ -30,7 +30,11 @@ var WLXTUtils = {
     /*
      * used to only allow one class to download at a time
      */
-    courseFlag : 0,
+    flag0 : 0,
 
+    /*
+     * one level above flag0
+     */
+    flag1 : 0,
 };
 
