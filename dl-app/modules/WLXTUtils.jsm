@@ -27,5 +27,10 @@ var WLXTUtils = {
      */
     dlHelper : {},
 
+    /*
+     * used to only allow one class to download at a time
+     */
+    courseFlag : 0,
+
 };
 
