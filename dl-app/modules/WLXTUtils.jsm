@@ -26,7 +26,7 @@ var WLXTUtils = {
      * ClassHelper
      */
     dlHelper : {},
-
+    //XXX: fix busy waitng getting stuck
     /*
      * used to only allow one class to download at a time
      */

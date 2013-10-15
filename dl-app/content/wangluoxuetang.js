@@ -279,7 +279,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
             for (var courseID in classData) {
                 //XXX remove next line and related
                 if (j >= 1) {
-                    break;
+                    //break;
                 }
                 j += 1;
                 WLXTUtils.flag0 = 1;
