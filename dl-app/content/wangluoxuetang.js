@@ -100,17 +100,7 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
      * TODO: what's bbs id?
      */
 
-    WLXTUtils.flag1 = 1;
-    WLXTUtils.turn1 = 1;
-
     window.open("http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/getnoteid_student.jsp?course_id=" + classDatum.id);
-
-    while (WLXTUtils.flag1 == 1) {
-        if (WLXTUtils.turn1 != 0) {
-            while (WLXTUtils.turn1 != 0) {
-            }
-        }
-    }
 
     /*
      * 课程信息
@@ -141,8 +131,6 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
      * http://learn.tsinghua.edu.cn/MultiLanguage/public/discuss/main.jsp?course_id=${id}
      */
 
-    WLXTUtils.turn0 = 0;
-    WLXTUtils.flag0 = 0;
 };
 
 WLXT.DownloadData.checkCoursePageType = function(URL) {
@@ -282,17 +270,8 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     //break;
                 }
                 j += 1;
-                WLXTUtils.flag0 = 1;
-                WLXTUtils.turn0 = 1;
-
                 WLXT.DownloadData.downloadClass(classData[courseID]);
 
-                while (WLXTUtils.flag0 == 1) {
-                    if (WLXTUtils.turn0 != 0) {
-                        while (WLXTUtils.turn0 != 0) {
-                        }
-                    }
-                }
             }
             //aEvent.target.defaultView.close();//XXX
             break;
@@ -334,24 +313,13 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                         var noteID = noteReplyRegex.exec(noteMetaInfo.URL).pop();
                         converter.writeString("\"" + noteID + "\",\"" + noteMetaInfo.serial + "\",\"" + noteMetaInfo.title + "\",\"" + noteMetaInfo.publisher + "\",\"" + noteMetaInfo.date + "\"");
 
-                        WLXTUtils.flag2 = 1;
-                        WLXTUtils.turn2 = 1;
-
                         window.open(noteMetaInfo.URL);
 
-                        while (WLXTUtils.flag2 == 1) {
-                            if (WLXTUtils.turn2 != 0) {
-                                while (WLXTUtils.turn2 != 0) {
-                                }
-                            }
-                        }
                     }
 
                     converter.close();
                     aEvent.target.defaultView.close();
 
-                    WLXTUtils.turn1 = 0;
-                    WLXTUtils.flag1 = 0;
                     break;
 
                 case WLXT.DownloadData.PageType.NOTE_REPLY:
@@ -371,9 +339,6 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     converter.writeString("<p>" + noteTitle + "</p>\n\n<p>" + noteContent + "</p>");
 
                     converter.close();
-
-                    WLXTUtils.turn2 = 0;
-                    WLXTUtils.flag2 = 0;
 
                     aEvent.target.defaultView.close();
                     break;
