@@ -399,3 +399,5 @@ window.addEventListener("load", function load(event) {
     WLXT.DownloadData.init();
 }, false);
 
+document.addEventListener("openCourse", function(aEvent) {
+}, false);
