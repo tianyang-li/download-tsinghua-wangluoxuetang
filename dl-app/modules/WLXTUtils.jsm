@@ -26,5 +26,11 @@ var WLXTUtils = {
      * ClassHelper
      */
     dlHelper : {},
+
+    /*
+     * stores a list of course to download
+     */
+    courseList : null,
+    courseListInd : null,
 };
 

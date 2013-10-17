@@ -254,25 +254,19 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
             var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
             converter.init(foStream, "UTF-8", 0, 0);
 
+            WLXTUtils.courseList = new Array(classRows.length - 2);
+
             for (var i = 0; i < classRows.length - 2; ++i) {
                 var classDatum = WLXT.DownloadData.getClassNameURL(classRows[i + 2]);
                 classData[classDatum.id] = classDatum;
                 converter.writeString("\"" + classDatum.id + "\",\"" + classDatum.name + "\"" + "\n");
+                WLXTUtils.courseList[i] = classDatum;
             }
 
             converter.close();
+            WLXTUtils.courseListInd = 0;
+            document.dispatchEvent(new Event("openCourse"));
 
-            //XXX remove next line and related
-            var j = 0;
-            for (var courseID in classData) {
-                //XXX remove next line and related
-                if (j >= 1) {
-                    //break;
-                }
-                j += 1;
-                WLXT.DownloadData.downloadClass(classData[courseID]);
-
-            }
             //aEvent.target.defaultView.close();//XXX
             break;
 
@@ -400,4 +394,6 @@ window.addEventListener("load", function load(event) {
 }, false);
 
 document.addEventListener("openCourse", function(aEvent) {
+    WLXT.DownloadData.downloadClass(WLXTUtils.courseList[WLXTUtils.courseListInd]);
+    WLXTUtils.courseListInd += 1;
 }, false);
