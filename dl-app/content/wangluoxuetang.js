@@ -84,53 +84,94 @@ WLXT.DownloadData.PageType = {
 };
 
 WLXT.DownloadData.downloadClass = function(classDatum) {
-    WLXTUtils.dlHelper[classDatum.id] = new WLXTUtils.ClassHelper();
-    WLXTUtils.dlHelper[classDatum.id].dir = WLXTUtils.dlDir.clone();
-    WLXTUtils.dlHelper[classDatum.id].dir.append(classDatum.id);
-    WLXTUtils.dlHelper[classDatum.id].dir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+    switch (WLXTUtils.downloadClassPage) {
 
-    /*
-     * TODO: this might change over the years
-     *
-     * 课程公告
-     * open this
-     *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/getnoteid_student.jsp?course_id=${id}
-     * to get this
-     *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/note_list_student.jsp?bbs_id=${bbs_id}&course_id=${course_id}
-     * TODO: what's bbs id?
-     */
+        case 0:
+            WLXTUtils.dlHelper[classDatum.id] = new WLXTUtils.ClassHelper();
+            WLXTUtils.dlHelper[classDatum.id].dir = WLXTUtils.dlDir.clone();
+            WLXTUtils.dlHelper[classDatum.id].dir.append(classDatum.id);
+            WLXTUtils.dlHelper[classDatum.id].dir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
 
-    window.open("http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/getnoteid_student.jsp?course_id=" + classDatum.id);
+            /*
+             * TODO: this might change over the years
+             *
+             * 课程公告
+             * open this
+             *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/getnoteid_student.jsp?course_id=${id}
+             * to get this
+             *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/note_list_student.jsp?bbs_id=${bbs_id}&course_id=${course_id}
+             * TODO: what's bbs id?
+             */
 
-    /*
-     * 课程信息
-     * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/course_info.jsp?course_id=${id}
-     *
-     * 课程文件
-     * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/download.jsp?course_id=${id}
-     *
-     * 教学资源
-     * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/ware_list.jsp?course_id=${id}
-     *
-     * 课程作业
-     * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/hom_wk_brw.jsp?course_id=${id}
-     *
-     * 课程答疑
-     * open this
-     *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/getbbsid_student.jsp?course_id=${id}
-     * to get this
-     *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/bbs_list_student.jsp?bbs_id=${id}&course_id=${id}
-     *
-     * 课程讨论
-     * open this
-     *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/gettalkid_student.jsp?course_id=${id}
-     * to get this
-     *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/talk_list_student.jsp?bbs_id=${id}&course_id=${id}
-     *
-     * 自由讨论区
-     * http://learn.tsinghua.edu.cn/MultiLanguage/public/discuss/main.jsp?course_id=${id}
-     */
+            window.open("http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/getnoteid_student.jsp?course_id=" + classDatum.id);
 
+            break;
+
+        case 1:
+            /*
+             * 课程信息
+             * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/course_info.jsp?course_id=${id}
+             */
+            break;
+
+        case 2:
+            /*
+             * 课程文件
+             * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/download.jsp?course_id=${id}
+             */
+            break;
+
+        case 3:
+            /*
+             * 教学资源
+             * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/ware_list.jsp?course_id=${id}
+             */
+            break;
+
+        case 4:
+            /*
+             * 课程作业
+             * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/hom_wk_brw.jsp?course_id=${id}
+             */
+            break;
+
+        case 5:
+            /*
+             * 课程答疑
+             * open this
+             *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/getbbsid_student.jsp?course_id=${id}
+             * to get this
+             *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/bbs_list_student.jsp?bbs_id=${id}&course_id=${id}
+             */
+            break;
+
+        case 6:
+            /*
+             * 课程讨论
+             * open this
+             *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/gettalkid_student.jsp?course_id=${id}
+             * to get this
+             *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/talk_list_student.jsp?bbs_id=${id}&course_id=${id}
+             */
+            break;
+
+        case 7:
+            /*
+             * 自由讨论区
+             * http://learn.tsinghua.edu.cn/MultiLanguage/public/discuss/main.jsp?course_id=${id}
+             */
+            break;
+
+        default:
+            break;
+    }
+
+    WLXTUtils.downloadClassPage += 1;
+    if (WLXTUtils.downloadClassPage == 8) {
+        WLXTUtils.downloadClassPage = 0;
+        WLXTUtils.courseListInd += 1;
+    }
+    document.dispatchEvent(new Event("openCourse"));
 };
 
 WLXT.DownloadData.checkCoursePageType = function(URL) {
@@ -395,5 +436,5 @@ window.addEventListener("load", function load(event) {
 
 document.addEventListener("openCourse", function(aEvent) {
     WLXT.DownloadData.downloadClass(WLXTUtils.courseList[WLXTUtils.courseListInd]);
-    WLXTUtils.courseListInd += 1;
 }, false);
+
