@@ -289,10 +289,8 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
         case "http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/mainstudent.jsp":
             window.open("http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/MyCourse.jsp?typepage=2", "wlxt_list_window", WLXT.DownloadData.strWindowFeatures);
             aEvent.target.defaultView.close();
-
             var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
             domWindowUtils.garbageCollect();
-
             break;
 
         case "http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/MyCourse.jsp?typepage=2":
@@ -323,9 +321,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
             converter.close();
             WLXTUtils.courseListInd = 0;
             document.dispatchEvent(new Event("openCourse"));
-
             aEvent.target.defaultView.close();
-
             var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
             domWindowUtils.garbageCollect();
             break;
