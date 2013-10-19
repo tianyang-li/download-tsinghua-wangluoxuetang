@@ -112,6 +112,7 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
              * 课程信息
              * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/course_info.jsp?course_id=${id}
              */
+
             break;
 
         case 2:
@@ -119,6 +120,7 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
              * 课程文件
              * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/download.jsp?course_id=${id}
              */
+
             break;
 
         case 3:
@@ -126,6 +128,7 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
              * 教学资源
              * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/ware_list.jsp?course_id=${id}
              */
+
             break;
 
         case 4:
@@ -133,6 +136,7 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
              * 课程作业
              * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/hom_wk_brw.jsp?course_id=${id}
              */
+
             break;
 
         case 5:
@@ -143,6 +147,7 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
              * to get this
              *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/bbs_list_student.jsp?bbs_id=${id}&course_id=${id}
              */
+
             break;
 
         case 6:
@@ -153,6 +158,7 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
              * to get this
              *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/talk_list_student.jsp?bbs_id=${id}&course_id=${id}
              */
+
             break;
 
         case 7:
@@ -160,6 +166,7 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
              * 自由讨论区
              * http://learn.tsinghua.edu.cn/MultiLanguage/public/discuss/main.jsp?course_id=${id}
              */
+
             break;
 
         default:
@@ -170,8 +177,13 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
     if (WLXTUtils.downloadClassPage == 8) {
         WLXTUtils.downloadClassPage = 0;
         WLXTUtils.courseListInd += 1;
+        document.dispatchEvent(new Event("openCourse"));
     }
-    document.dispatchEvent(new Event("openCourse"));
+
+    //XXX:REMOVE
+    if (WLXTUtils.downloadClassPage >= 2) {
+        document.dispatchEvent(new Event("openCourse"));
+    }
 };
 
 WLXT.DownloadData.checkCoursePageType = function(URL) {
@@ -336,6 +348,8 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                         //TODO: remove this?
                         throw "length of NOTE_ID notesRows is 0!";
                     }
+                    WLXTUtils.kcggListInd = 0;
+                    WLXTUtils.kcggList = new Array(notesRows.length - 1);
                     for (var i = 1; i != notesRows.length; i++) {
                         var noteMetaInfo = {
                             serial : notesRows[i].cells[0].innerHTML.trim(),
@@ -347,14 +361,12 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                         var noteReplyRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/public\/bbs\/note_reply\.jsp\?bbs_type\=\S+&id\=(\d+)&course_id\=\d+/;
                         var noteID = noteReplyRegex.exec(noteMetaInfo.URL).pop();
                         converter.writeString("\"" + noteID + "\",\"" + noteMetaInfo.serial + "\",\"" + noteMetaInfo.title + "\",\"" + noteMetaInfo.publisher + "\",\"" + noteMetaInfo.date + "\"");
-
-                        window.open(noteMetaInfo.URL);
-
+                        WLXTUtils.kcggList[i - 1] = noteMetaInfo;
                     }
 
                     converter.close();
+                    document.dispatchEvent(new Event("kcggDl"));
                     aEvent.target.defaultView.close();
-
                     break;
 
                 case WLXT.DownloadData.PageType.NOTE_REPLY:
@@ -375,6 +387,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
                     converter.close();
 
+                    document.dispatchEvent(new Event("kcggDl"));
                     aEvent.target.defaultView.close();
                     break;
 
@@ -436,5 +449,14 @@ window.addEventListener("load", function load(event) {
 
 document.addEventListener("openCourse", function(aEvent) {
     WLXT.DownloadData.downloadClass(WLXTUtils.courseList[WLXTUtils.courseListInd]);
+}, false);
+
+document.addEventListener("kcggDl", function(aEvent) {
+    if (WLXTUtils.kcggListInd != WLXTUtils.kcggList.length) {
+        window.open(WLXTUtils.kcggList[WLXTUtils.kcggListInd].URL);
+        WLXTUtils.kcggListInd += 1;
+    } else {
+        document.dispatchEvent(new Event("openCourse"));
+    }
 }, false);
 

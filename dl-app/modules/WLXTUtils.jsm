@@ -34,5 +34,8 @@ var WLXTUtils = {
     courseListInd : null,
 
     downloadClassPage : 0,
+
+    kcggList : null,
+    kcggListInd : null,
 };
 
