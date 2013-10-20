@@ -347,27 +347,27 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     converter.init(foStream, "UTF-8", 0, 0);
 
                     var notesRows = aEvent.target.getElementById("table_box").rows;
-                    if (notesRows.length == 0) {
-                        //TODO: remove this?
-                        throw "length of NOTE_ID notesRows is 0!";
-                    }
                     WLXTUtils.kcggListInd = 0;
-                    WLXTUtils.kcggList = new Array(notesRows.length - 1);
-                    for (var i = 1; i != notesRows.length; i++) {
-                        var noteMetaInfo = {
-                            serial : notesRows[i].cells[0].innerHTML.trim(),
-                            title : notesRows[i].cells[1].getElementsByTagName("a")[0].innerHTML.trim(),
-                            publisher : notesRows[i].cells[2].innerHTML.trim(),
-                            date : notesRows[i].cells[3].innerHTML.trim(),
-                            URL : notesRows[i].cells[1].getElementsByTagName("a")[0].href.trim(),
-                        };
-                        var noteReplyRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/public\/bbs\/note_reply\.jsp\?bbs_type\=\S+&id\=(\d+)&course_id\=\d+/;
-                        var noteID = noteReplyRegex.exec(noteMetaInfo.URL).pop();
-                        converter.writeString("\"" + noteID + "\",\"" + noteMetaInfo.serial + "\",\"" + noteMetaInfo.title + "\",\"" + noteMetaInfo.publisher + "\",\"" + noteMetaInfo.date + "\"");
-                        WLXTUtils.kcggList[i - 1] = noteMetaInfo;
-                    }
+                    if (notesRows.length == 0) {
+                        WLXTUtils.kcggList = new Array(0);
+                    } else {
+                        WLXTUtils.kcggList = new Array(notesRows.length - 1);
+                        for (var i = 1; i != notesRows.length; i++) {
+                            var noteMetaInfo = {
+                                serial : notesRows[i].cells[0].innerHTML.trim(),
+                                title : notesRows[i].cells[1].getElementsByTagName("a")[0].innerHTML.trim(),
+                                publisher : notesRows[i].cells[2].innerHTML.trim(),
+                                date : notesRows[i].cells[3].innerHTML.trim(),
+                                URL : notesRows[i].cells[1].getElementsByTagName("a")[0].href.trim(),
+                            };
+                            var noteReplyRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/public\/bbs\/note_reply\.jsp\?bbs_type\=\S+&id\=(\d+)&course_id\=\d+/;
+                            var noteID = noteReplyRegex.exec(noteMetaInfo.URL).pop();
+                            converter.writeString("\"" + noteID + "\",\"" + noteMetaInfo.serial + "\",\"" + noteMetaInfo.title + "\",\"" + noteMetaInfo.publisher + "\",\"" + noteMetaInfo.date + "\"");
+                            WLXTUtils.kcggList[i - 1] = noteMetaInfo;
+                        }
 
-                    converter.close();
+                        converter.close();
+                    }
                     document.dispatchEvent(new Event("kcggDl"));
                     aEvent.target.defaultView.close();
                     var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
