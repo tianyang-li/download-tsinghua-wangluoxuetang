@@ -112,7 +112,7 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
              * 课程信息
              * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/course_info.jsp?course_id=${id}
              */
-
+            window.open("http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/course_info.jsp?course_id=" + classDatum.id);
             break;
 
         case 2:
@@ -177,11 +177,11 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
     if (WLXTUtils.downloadClassPage == 8) {
         WLXTUtils.downloadClassPage = 0;
         WLXTUtils.courseListInd += 1;
-        document.dispatchEvent(new Event("openCourse"));
+        //document.dispatchEvent(new Event("openCourse"));//XXX:add back this line
     }
 
     //XXX:REMOVE
-    if (WLXTUtils.downloadClassPage >= 2) {
+    if (WLXTUtils.downloadClassPage >= 3) {
         document.dispatchEvent(new Event("openCourse"));
     }
 };
@@ -399,6 +399,11 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     break;
 
                 case WLXT.DownloadData.PageType.COURSE_INFO:
+
+                    document.dispatchEvent(new Event("openCourse"));
+                    aEvent.target.defaultView.close();
+                    var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+                    domWindowUtils.garbageCollect();
                     break;
 
                 case WLXT.DownloadData.PageType.DOWNLOAD:
