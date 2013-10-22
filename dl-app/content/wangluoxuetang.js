@@ -399,7 +399,16 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     break;
 
                 case WLXT.DownloadData.PageType.COURSE_INFO:
-
+                    var infoFile = WLXTUtils.dlHelper[pageType.id].dir.clone();
+                    infoFile.append(pageType.id + ".html");
+                    infoFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                    var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+                    foStream.init(infoFile, -1, parseInt("0600", 8), 0);
+                    var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+                    converter.init(foStream, "UTF-8", 0, 0);
+                    converter.writeString(aEvent.target.body.innerHTML);
+                    converter.close();
+                    //TODO: follow links in here?
                     document.dispatchEvent(new Event("openCourse"));
                     aEvent.target.defaultView.close();
                     var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
