@@ -419,7 +419,14 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     /*
                      * tables called Layer1 Layer2 etc.
                      */
-                    document.dispatchEvent(new Event(""));
+                    var curLayer = 1;
+                    var dlTable = aEvent.target.getElementById("Layer" + curLayer.toString());
+                    while (dlTable !== null) {
+
+                        curLayer += 1;
+                        dlTable = aEvent.target.getElementById("Layer" + curLayer.toString());
+                    }
+                    document.dispatchEvent(new Event("kcwjDl"));
                     aEvent.target.defaultView.close();
                     var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
                     domWindowUtils.garbageCollect();
@@ -486,5 +493,9 @@ document.addEventListener("kcggDl", function(aEvent) {
     } else {
         document.dispatchEvent(new Event("openCourse"));
     }
+}, false);
+
+document.addEventListener("kcwjDl", function(aEvent) {
+
 }, false);
 
