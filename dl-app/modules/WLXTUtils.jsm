@@ -18,6 +18,11 @@ var WLXTUtils = {
          * 课程公告
          */
         this.kcggDir = null;
+
+        /*
+         * 课程文件
+         */
+        this.kcwjDir = null;
     },
 
     /*
@@ -37,5 +42,8 @@ var WLXTUtils = {
 
     kcggList : null,
     kcggListInd : null,
+
+    kcwjList : null,
+    kcwjListInd : null,
 };
 

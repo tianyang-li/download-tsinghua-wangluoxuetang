@@ -422,7 +422,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     var curLayer = 1;
                     var dlTable = aEvent.target.getElementById("Layer" + curLayer.toString());
                     while (dlTable !== null) {
-
+                        var layerName = aEvent.target.getElementByID("ImageTab" + curLayer.toString()).innerHTML.trim();
                         curLayer += 1;
                         dlTable = aEvent.target.getElementById("Layer" + curLayer.toString());
                     }
