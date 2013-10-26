@@ -419,6 +419,20 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     /*
                      * tables called Layer1 Layer2 etc.
                      */
+
+                    WLXTUtils.dlHelper[pageType.id].kcwjDir = WLXTUtils.dlHelper[pageType.id].dir.clone();
+                    WLXTUtils.dlHelper[pageType.id].kcwjDir.append("kcwj");
+                    WLXTUtils.dlHelper[pageType.id].kcwjDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+
+                    var dlInfoFile = WLXTUtils.dlHelper[pageType.id].kcwjDir.clone();
+                    dlInfoFile.append("kcwj.csv");
+                    dlInfoFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+
+                    var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+                    foStream.init(dlInfoFile, -1, parseInt("0600", 8), 0);
+                    var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+                    converter.init(foStream, "UTF-8", 0, 0);
+
                     var curLayer = 1;
                     var dlTable = aEvent.target.getElementById("Layer" + curLayer.toString());
                     while (dlTable !== null) {
@@ -426,6 +440,9 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                         curLayer += 1;
                         dlTable = aEvent.target.getElementById("Layer" + curLayer.toString());
                     }
+
+                    converter.close();
+
                     document.dispatchEvent(new Event("kcwjDl"));
                     aEvent.target.defaultView.close();
                     var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
