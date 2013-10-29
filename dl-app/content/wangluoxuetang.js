@@ -440,7 +440,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                         varlayerTrs = layerName.getElementsByTagName("tr");
                         if (layerTrs.length > 1) {
                             for (var i = 1; i != layerTrs.length; i++) {
-                            
+                                var dlInfo = {};
                             }
                         }
                         curLayer += 1;
