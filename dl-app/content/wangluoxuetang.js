@@ -433,6 +433,9 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
                     converter.init(foStream, "UTF-8", 0, 0);
 
+                    WLXTUtils.kcwjList = new Array();
+                    WLXTUtils.kcwjListInd = 0;
+
                     var curLayer = 1;
                     var dlTable = aEvent.target.getElementById("Layer" + curLayer.toString());
                     while (dlTable !== null) {
@@ -441,6 +444,8 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                         if (layerTrs.length > 1) {
                             for (var i = 1; i != layerTrs.length; i++) {
                                 var dlInfo = {};
+                                WLXTUtils.kcwjList[WLXTUtils.kcwjListInd] = dlInfo;
+                                WLXTUtils.kcwjListInd += 1;
                             }
                         }
                         curLayer += 1;
@@ -448,6 +453,8 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     }
 
                     converter.close();
+
+                    WLXTUtils.kcwjListInd = 0;
 
                     document.dispatchEvent(new Event("kcwjDl"));
                     aEvent.target.defaultView.close();
