@@ -439,10 +439,13 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     var curLayer = 1;
                     var dlTable = aEvent.target.getElementById("Layer" + curLayer.toString());
                     while (dlTable !== null) {
-                        var layerName = aEvent.target.getElementByID("ImageTab" + curLayer.toString()).innerHTML.trim();
-                        varlayerTrs = layerName.getElementsByTagName("tr");
+                        var layerName = aEvent.target.getElementById("ImageTab" + curLayer.toString()).innerHTML.trim();
+                        var layerTrs = dlTable.getElementsByTagName("tr");
                         if (layerTrs.length > 1) {
                             for (var i = 1; i != layerTrs.length; i++) {
+                                var fileNameRegex = /<!--.*getfilelink\=(.*)&id\=.*-->/;
+                                var fileNameRegexExec = fileNameRegex.exec(layerTrs[i].innerHTML.trim());
+
                                 var dlInfo = {};
                                 WLXTUtils.kcwjList[WLXTUtils.kcwjListInd] = dlInfo;
                                 WLXTUtils.kcwjListInd += 1;
