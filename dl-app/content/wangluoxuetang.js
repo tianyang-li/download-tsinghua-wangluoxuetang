@@ -443,6 +443,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                         var layerTrs = dlTable.getElementsByTagName("tr");
                         if (layerTrs.length > 1) {
                             for (var i = 1; i != layerTrs.length; i++) {
+                                //TODO: is this regex good enough?
                                 var fileNameRegex = /<!--.*getfilelink\=(.*)&id\=.*-->/;
                                 var fileNameRegexExec = fileNameRegex.exec(layerTrs[i].innerHTML.trim());
 
