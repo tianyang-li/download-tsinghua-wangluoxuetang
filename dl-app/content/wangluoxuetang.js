@@ -445,9 +445,11 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                             for (var i = 1; i != layerTrs.length; i++) {
                                 //TODO: is this regex good enough?
                                 var fileNameRegex = /<!--.*getfilelink\=(.*)&id\=.*-->/;
-                                var fileNameRegexExec = fileNameRegex.exec(layerTrs[i].innerHTML.trim());
+                                var fileName = fileNameRegex.exec(layerTrs[i].innerHTML.trim())[1];
                                 var fileLink = layerTrs[i].cells[1].getElementsByTagName("a")[0];
-                                converter.writeString("\"" + layerTrs[i].cells[0].innerHTML.trim() + "\",\"" + fileLink.innerHTML.trim() + "\",\"" + layerTrs[i].cells[2].innerHTML.trim() + "\",\"" + layerTrs[i].cells[4].innerHTML.trim() + "\"\n");
+                                var fileIdRegex = /file_id\=(\d+)/;
+                                var fileId = fileIdRegex.exec(fileLink.href)[1];
+                                converter.writeString("\"" + layerTrs[i].cells[0].innerHTML.trim() + "\",\"" + fileLink.innerHTML.trim() + "\",\"" + layerTrs[i].cells[2].innerHTML.trim() + "\",\"" + layerTrs[i].cells[4].innerHTML.trim() + "\",\"" + fileId + "\",\"" + fileName + "\"\n");
                                 // file id is at the end of fileLink.href
                                 // for example
                                 // http://learn.tsinghua.edu.cn/uploadFile/downloadFile_student.jsp?module_id=322&filePath=QJaar7Cb7HQGihH%2BE0UUI/n554wng1g0W2xzkl6BxyIEt87lL4jhzbmIxh89tBHgLPyC8n4Q7r9p%2BlRbU3mNxmwWRz3Uk6P%2B%2BaxWvoAjmt2GYgPWUOO9zm6fWQkmlNTK7datTNbLXIU%3D&course_id=${course_id}&file_id=${file_id}
@@ -533,6 +535,13 @@ document.addEventListener("kcggDl", function(aEvent) {
 }, false);
 
 document.addEventListener("kcwjDl", function(aEvent) {
+    if (WLXTUtils.kcwjListInd == WLXTUtils.kcwjList.length) {
+        document.dispatchEvent(new Event("openCourse"));
+    }
 
+    WLXTUtils.kcwjListInd += 1;
+
+    document.dispatchEvent(new Event("kcwjDl"));
+    //XXX: fix needed
 }, false);
 
