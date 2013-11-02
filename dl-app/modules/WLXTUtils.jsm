@@ -45,5 +45,11 @@ var WLXTUtils = {
 
     kcwjList : null,
     kcwjListInd : null,
+
+    // Obtain the privacy context of the browser window that the URL
+    // we are downloading comes from. If, and only if, the URL is not
+    // related to a window, null should be used instead.
+    //var privacy = PrivateBrowsingUtils.privacyContextFromWindow(urlSourceWindow);
+    kcwjListWin : null,
 };
 

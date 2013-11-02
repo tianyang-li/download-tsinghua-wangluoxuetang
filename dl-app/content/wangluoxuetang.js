@@ -466,7 +466,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     WLXTUtils.kcwjListInd = 0;
 
                     document.dispatchEvent(new Event("kcwjDl"));
-                    aEvent.target.defaultView.close();
+                    WLXTUtils.kcwjListWin = aEvent.target.defaultView;
                     var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
                     domWindowUtils.garbageCollect();
                     break;
@@ -536,6 +536,7 @@ document.addEventListener("kcggDl", function(aEvent) {
 
 document.addEventListener("kcwjDl", function(aEvent) {
     if (WLXTUtils.kcwjListInd == WLXTUtils.kcwjList.length) {
+        WLXTUtils.kcwjListWin.close();
         document.dispatchEvent(new Event("openCourse"));
     }
 
