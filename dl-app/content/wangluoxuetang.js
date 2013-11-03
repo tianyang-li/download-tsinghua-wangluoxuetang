@@ -4,6 +4,7 @@
  */
 
 Components.utils.import("resource://gre/modules/FileUtils.jsm");
+Components.utils.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
 Components.utils.import("resource://modules/WLXTUtils.jsm");
 
 if ("undefined" == typeof (WLXT)) {
@@ -453,7 +454,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                                 // file id is at the end of fileLink.href
                                 // for example
                                 // http://learn.tsinghua.edu.cn/uploadFile/downloadFile_student.jsp?module_id=322&filePath=QJaar7Cb7HQGihH%2BE0UUI/n554wng1g0W2xzkl6BxyIEt87lL4jhzbmIxh89tBHgLPyC8n4Q7r9p%2BlRbU3mNxmwWRz3Uk6P%2B%2BaxWvoAjmt2GYgPWUOO9zm6fWQkmlNTK7datTNbLXIU%3D&course_id=${course_id}&file_id=${file_id}
-                                WLXTUtils.kcwjList[WLXTUtils.kcwjListInd] = fileLink.href;
+                                WLXTUtils.kcwjList[WLXTUtils.kcwjListInd] = fileLink.href.trim();
                                 WLXTUtils.kcwjListInd += 1;
                             }
                         }
@@ -465,10 +466,9 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
                     WLXTUtils.kcwjListInd = 0;
 
-                    document.dispatchEvent(new Event("kcwjDl"));
                     WLXTUtils.kcwjListWin = aEvent.target.defaultView;
-                    var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
-                    domWindowUtils.garbageCollect();
+
+                    document.dispatchEvent(new Event("kcwjDl"));
                     break;
 
                 case WLXT.DownloadData.PageType.WARE_LIST:
@@ -537,12 +537,42 @@ document.addEventListener("kcggDl", function(aEvent) {
 document.addEventListener("kcwjDl", function(aEvent) {
     if (WLXTUtils.kcwjListInd == WLXTUtils.kcwjList.length) {
         WLXTUtils.kcwjListWin.close();
+        var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+        domWindowUtils.garbageCollect();
         document.dispatchEvent(new Event("openCourse"));
+        return;
     }
 
-    WLXTUtils.kcwjListInd += 1;
+    const WebBrowserPersist = Components.Constructor("@mozilla.org/embedding/browser/nsWebBrowserPersist;1", "nsIWebBrowserPersist");
 
-    document.dispatchEvent(new Event("kcwjDl"));
-    //XXX: fix needed
+    var persist = WebBrowserPersist();
+
+    var idsRegex = /&course_id\=(\d+)&file_id\=(\d+)/;
+    var idsRegexExec = idsRegex.exec(WLXTUtils.kcwjList[WLXTUtils.kcwjListInd]);
+    var courseId = idsRegexExec[1];
+    var fileId = idsRegexExec[2];
+
+    var dlFile = WLXTUtils.dlHelper[courseId].kcwjDir.clone();
+    dlFile.append(fileId);
+    dlFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+
+    var privacy = PrivateBrowsingUtils.privacyContextFromWindow(WLXTUtils.kcwjListWin);
+
+    var obj_URI = Services.io.newURI(WLXTUtils.kcwjList[WLXTUtils.kcwjListInd], null, null);
+
+    persist.progressListener = {
+        onProgressChange : function(aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress) {
+            if (aCurTotalProgress == aMaxTotalProgress) {
+                WLXTUtils.kcwjListInd += 1;
+                document.dispatchEvent(new Event("kcwjDl"));
+            }
+        },
+
+        onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus) {
+        }
+    };
+
+    persist.saveURI(obj_URI, null, null, null, "", dlFile, privacy);
+
 }, false);
 
