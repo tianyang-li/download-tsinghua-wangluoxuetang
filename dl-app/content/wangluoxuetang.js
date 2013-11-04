@@ -129,7 +129,7 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
              * 教学资源
              * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/ware_list.jsp?course_id=${id}
              */
-
+            window.open("http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/ware_list.jsp?course_id=" + classDatum.id);
             break;
 
         case 4:
@@ -175,16 +175,18 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
     }
 
     WLXTUtils.downloadClassPage += 1;
+
+    //XXX:REMOVE
+    if (WLXTUtils.downloadClassPage >= 5) {
+        document.dispatchEvent(new Event("openCourse"));
+    }
+
     if (WLXTUtils.downloadClassPage == 8) {
         WLXTUtils.downloadClassPage = 0;
         WLXTUtils.courseListInd += 1;
         //document.dispatchEvent(new Event("openCourse"));//XXX:add back this line
     }
 
-    //XXX:REMOVE
-    if (WLXTUtils.downloadClassPage >= 4) {
-        document.dispatchEvent(new Event("openCourse"));
-    }
 };
 
 WLXT.DownloadData.checkCoursePageType = function(URL) {
@@ -535,11 +537,12 @@ document.addEventListener("kcggDl", function(aEvent) {
 }, false);
 
 document.addEventListener("kcwjDl", function(aEvent) {
+
     if (WLXTUtils.kcwjListInd == WLXTUtils.kcwjList.length) {
+        document.dispatchEvent(new Event("openCourse"));
         WLXTUtils.kcwjListWin.close();
         var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
         domWindowUtils.garbageCollect();
-        document.dispatchEvent(new Event("openCourse"));
         return;
     }
 
@@ -572,7 +575,11 @@ document.addEventListener("kcwjDl", function(aEvent) {
         }
     };
 
-    persist.saveURI(obj_URI, null, null, null, "", dlFile, privacy);
+    //persist.saveURI(obj_URI, null, null, null, "", dlFile, privacy);
+    //XXX: uncomment
+    WLXTUtils.kcwjListInd += 1;
+    document.dispatchEvent(new Event("kcwjDl"));
+    //XXX:remove above lines
 
 }, false);
 
