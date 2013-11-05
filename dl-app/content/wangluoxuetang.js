@@ -137,7 +137,7 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
              * 课程作业
              * http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/hom_wk_brw.jsp?course_id=${id}
              */
-
+            window.open("http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/hom_wk_brw.jsp?course_id=" + classDatum.id);
             break;
 
         case 5:
@@ -175,11 +175,6 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
     }
 
     WLXTUtils.downloadClassPage += 1;
-
-    //XXX:REMOVE
-    if (WLXTUtils.downloadClassPage >= 5) {
-        document.dispatchEvent(new Event("openCourse"));
-    }
 
     if (WLXTUtils.downloadClassPage == 8) {
         WLXTUtils.downloadClassPage = 0;
@@ -474,6 +469,25 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     break;
 
                 case WLXT.DownloadData.PageType.WARE_LIST:
+
+                    var dlFile = WLXTUtils.dlHelper[pageType.id].dir.clone();
+                    dlFile.append("jxzy.html");
+                    dlFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+
+                    var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+                    foStream.init(dlFile, -1, parseInt("0600", 8), 0);
+                    var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+                    converter.init(foStream, "UTF-8", 0, 0);
+
+                    converter.writeString(aEvent.target.body.innerHTML);
+
+                    converter.close();
+
+                    document.dispatchEvent(new Event("openCourse"));
+                    aEvent.target.defaultView.close();
+                    var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+                    domWindowUtils.garbageCollect();
+
                     break;
 
                 case WLXT.DownloadData.PageType.HOM_WK_BRW:
@@ -557,7 +571,6 @@ document.addEventListener("kcwjDl", function(aEvent) {
 
     var dlFile = WLXTUtils.dlHelper[courseId].kcwjDir.clone();
     dlFile.append(fileId);
-    dlFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
 
     var privacy = PrivateBrowsingUtils.privacyContextFromWindow(WLXTUtils.kcwjListWin);
 
