@@ -491,6 +491,19 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     break;
 
                 case WLXT.DownloadData.PageType.HOM_WK_BRW:
+                    var hwRows = aEvent.target.getElementsByTagName("tbody")[2].rows;
+                    if (hwRows.length > 1) {
+                        WLXTUtils.kczyList = new Array();
+                        WLXTUtils.kczyListInd = 0;
+                        for (var i = 0; i != hwRows.lenth - 1; ++i) {
+                            WLXTUtils.kczyList[i] = {};
+                        }
+                    } else {
+                        document.dispatchEvent(new Event("openCourse"));
+                        aEvent.target.defaultView.close();
+                        var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+                        domWindowUtils.garbageCollect();
+                    }
                     break;
 
                 case WLXT.DownloadData.PageType.BBS_ID_STUDENT:

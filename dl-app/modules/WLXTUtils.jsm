@@ -51,5 +51,9 @@ var WLXTUtils = {
     // related to a window, null should be used instead.
     //var privacy = PrivateBrowsingUtils.privacyContextFromWindow(urlSourceWindow);
     kcwjListWin : null,
+
+    kczyList : null,
+    kczyListInd : null,
+
 };
 
