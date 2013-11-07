@@ -23,6 +23,11 @@ var WLXTUtils = {
          * 课程文件
          */
         this.kcwjDir = null;
+
+        /*
+         * 课程作业
+         */
+        this.kczyDir = null;
     },
 
     /*

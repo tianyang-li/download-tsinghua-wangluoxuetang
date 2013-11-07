@@ -493,11 +493,33 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                 case WLXT.DownloadData.PageType.HOM_WK_BRW:
                     var hwRows = aEvent.target.getElementsByTagName("tbody")[2].rows;
                     if (hwRows.length > 1) {
+
+                        WLXTUtils.dlHelper[pageType.id].kczyDir = WLXTUtils.dlHelper[pageType.id].dir.clone();
+                        WLXTUtils.dlHelper[pageType.id].kczyDir.append("kczy");
+                        WLXTUtils.dlHelper[pageType.id].kczyDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+
+                        var dlInfoFile = WLXTUtils.dlHelper[pageType.id].kczyDir.clone();
+                        dlInfoFile.append("kczy.csv");
+                        dlInfoFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+
+                        var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+                        foStream.init(dlInfoFile, -1, parseInt("0600", 8), 0);
+                        var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+                        converter.init(foStream, "UTF-8", 0, 0);
+
                         WLXTUtils.kczyList = new Array();
                         WLXTUtils.kczyListInd = 0;
-                        for (var i = 0; i != hwRows.lenth - 1; ++i) {
-                            WLXTUtils.kczyList[i] = {};
+                        for (var i = 0; i != hwRows.length - 1; ++i) {
+                            var hwIdRegex = /\?id\=(\d+)&course_id\=\d+&/;
+                            var hwId = hwIdRegex.exec(hwRows[i].cells[0].getElementsByTagName("a")[0].href)[1];
+                            WLXTUtils.kczyList[i] = {
+                                hwId : hwId,
+                            };
+                            converter.writeString("\"" + hwRows[i].cells[0].getElementsByTagName("a")[0].innerHTML.trim() + "\",\"" + hwRows[i].cells[1].innerHTML.trim() + "\",\"" + hwRows[i].cells[2].innerHTML.trim() + "\",\"" + hwId + "\"\n");
                         }
+
+                        converter.close();
+
                     } else {
                         document.dispatchEvent(new Event("openCourse"));
                         aEvent.target.defaultView.close();
