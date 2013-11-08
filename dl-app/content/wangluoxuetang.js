@@ -510,22 +510,35 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                         WLXTUtils.kczyList = new Array();
                         WLXTUtils.kczyListInd = 0;
                         for (var i = 0; i != hwRows.length - 1; ++i) {
-                            var hwIdRegex = /\?id\=(\d+)&course_id\=\d+&/;
-                            var hwId = hwIdRegex.exec(hwRows[i].cells[0].getElementsByTagName("a")[0].href)[1];
+                            var idRegex = /\?id\=(\d+)&course_id\=(\d+)&/;
+                            var idExec = idRegex.exec(hwRows[i].cells[0].getElementsByTagName("a")[0].href);
+                            var hwId = idExec[1];
+                            var courseId = idExec[2];
+                            Application.console.log(hwRows[i].cells[0].getElementsByTagName("a")[0].href + " " + hwId + " " + courseId);
                             WLXTUtils.kczyList[i] = {
+                                URL : hwRows[i].cells[0].getElementsByTagName("a")[0].href,
+                                courseId : courseId,
                                 hwId : hwId,
+
+                                /*
+                                 * there 2 pages to download from
+                                 * so use this to keep track
+                                 */
+                                curPage : 0,
                             };
                             converter.writeString("\"" + hwRows[i].cells[0].getElementsByTagName("a")[0].innerHTML.trim() + "\",\"" + hwRows[i].cells[1].innerHTML.trim() + "\",\"" + hwRows[i].cells[2].innerHTML.trim() + "\",\"" + hwId + "\"\n");
                         }
 
                         converter.close();
 
+                        document.dispatchEvent(new Event("kczyDl"));
+
                     } else {
                         document.dispatchEvent(new Event("openCourse"));
-                        aEvent.target.defaultView.close();
-                        var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
-                        domWindowUtils.garbageCollect();
                     }
+                    aEvent.target.defaultView.close();
+                    var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+                    domWindowUtils.garbageCollect();
                     break;
 
                 case WLXT.DownloadData.PageType.BBS_ID_STUDENT:
@@ -628,6 +641,28 @@ document.addEventListener("kcwjDl", function(aEvent) {
     WLXTUtils.kcwjListInd += 1;
     document.dispatchEvent(new Event("kcwjDl"));
     //XXX:remove above lines
+
+}, false);
+
+document.addEventListener("kczyDl", function(aEvent) {
+    if (WLXTUtils.kczyListInd == WLXTUtils.kczyList.length) {
+        document.dispatchEvent(new Event("openCourse"));
+        return;
+    }
+
+    switch(WLXTUtils.kczyList[WLXTUtils.kczyListInd].curPage) {
+        case 0:
+            WLXTUtils.kczyList[WLXTUtils.kczyListInd].curPage += 1;
+            break;
+
+        case 1:
+            WLXTUtils.kczyList[WLXTUtils.kczyListInd].curPage += 1;
+            break;
+
+        default:
+            WLXTUtils.kczyListInd += 1;
+            break;
+    }
 
 }, false);
 
