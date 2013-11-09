@@ -720,8 +720,7 @@ document.addEventListener("kcwjDl", function(aEvent) {
         }
     };
 
-    //persist.saveURI(obj_URI, null, null, null, "", dlFile, privacy);
-    //XXX: uncomment
+    //persist.saveURI(obj_URI, null, null, null, "", dlFile, privacy);//XXX: uncomment
     WLXTUtils.kcwjListInd += 1;
     document.dispatchEvent(new Event("kcwjDl"));
     //XXX:remove above lines
@@ -730,7 +729,7 @@ document.addEventListener("kcwjDl", function(aEvent) {
 
 document.addEventListener("kczyDl", function(aEvent) {
     if (WLXTUtils.kczyListInd == WLXTUtils.kczyList.length) {
-        //document.dispatchEvent(new Event("openCourse"));//XXX uncomment
+        document.dispatchEvent(new Event("openCourse"));
         return;
     }
 
@@ -781,7 +780,11 @@ document.addEventListener("kczyDlFiles", function(aEvent) {
                 }
             };
 
-            persist.saveURI(obj_URI, null, null, null, "", dlFile, privacy);
+            //persist.saveURI(obj_URI, null, null, null, "", dlFile, privacy);//XXX:uncomment
+            WLXTUtils.kczyFilesInd += 1;
+            document.dispatchEvent(new Event("kczyDlFiles"));
+            //XXX: remove the 2 above lines
+
         } else {
             WLXTUtils.kczyFilesInd += 1;
             document.dispatchEvent(new Event("kczyDlFiles"));
