@@ -74,6 +74,8 @@ WLXT.DownloadData.PageType = {
     DOWNLOAD : 2,
     WARE_LIST : 3,
     HOM_WK_BRW : 4,
+    HOM_WK_BRW_0 : 9,
+    HOM_WK_BRW_1 : 10,
     BBS_ID_STUDENT : 5,
     TALKID_STUDENT : 6,
     DISCUSS_MAIN : 7,
@@ -82,6 +84,12 @@ WLXT.DownloadData.PageType = {
      * 课程公告
      */
     NOTE_REPLY : 8,
+
+    /*
+     * IMPORTANT:
+     * new const should start from
+     * 11
+     */
 };
 
 WLXT.DownloadData.downloadClass = function(classDatum) {
@@ -243,6 +251,22 @@ WLXT.DownloadData.checkCoursePageType = function(URL) {
         return pageType;
     }
 
+    var hwDlPage0Regex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/lesson\/student\/hom_wk_detail\.jsp\?id\=(\d+)&course_id\=(\d+)&rec_id\=.*/;
+    if (( regexExec = hwDlPage0Regex.exec(URL)) !== null) {
+        pageType.type = WLXT.DownloadData.PageType.HOM_WK_BRW_0;
+        pageType.id = regexExec[2];
+        pageType["hwId"] = regexExec[1];
+        return pageType;
+    }
+
+    var hwDlPage1Regex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/lesson\/student\/hom_wk_view\.jsp\?id\=(\d+)&course_id\=(\d+)/;
+    if (( regexExec = hwDlPage1Regex.exec(URL)) !== null) {
+        pageType.type = WLXT.DownloadData.PageType.HOM_WK_BRW_1;
+        pageType.id = regexExec[2];
+        pageType["hwId"] = regexExec[1];
+        return pageType;
+    }
+
     var bbsIDStudentRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/public\/bbs\/bbs_list_student\.jsp\?bbs_id\=\d+&course_id\=(\d+)/;
     if (( regexExec = bbsIDStudentRegex.exec(URL)) !== null) {
         pageType.type = WLXT.DownloadData.PageType.BBS_ID_STUDENT;
@@ -374,8 +398,6 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
                 case WLXT.DownloadData.PageType.NOTE_REPLY:
                     var noteTable = aEvent.target.getElementById("table_box");
-                    var noteTitle = noteTable.getElementsByTagName("td")[1].innerHTML.trim();
-                    var noteContent = noteTable.getElementsByTagName("td")[3].innerHTML.trim();
 
                     var noteFile = WLXTUtils.dlHelper[pageType.courseID].kcggDir.clone();
                     noteFile.append(pageType.id + ".html");
@@ -386,7 +408,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
                     converter.init(foStream, "UTF-8", 0, 0);
 
-                    converter.writeString("<p>" + noteTitle + "</p>\n\n<p>" + noteContent + "</p>");
+                    converter.writeString(noteTable.innerHTML);
 
                     converter.close();
 
@@ -514,7 +536,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                             var idExec = idRegex.exec(hwRows[i].cells[0].getElementsByTagName("a")[0].href);
                             var hwId = idExec[1];
                             var courseId = idExec[2];
-                            Application.console.log(hwRows[i].cells[0].getElementsByTagName("a")[0].href + " " + hwId + " " + courseId);
+
                             WLXTUtils.kczyList[i] = {
                                 URL : hwRows[i].cells[0].getElementsByTagName("a")[0].href,
                                 courseId : courseId,
@@ -536,6 +558,52 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     } else {
                         document.dispatchEvent(new Event("openCourse"));
                     }
+                    aEvent.target.defaultView.close();
+                    var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+                    domWindowUtils.garbageCollect();
+                    break;
+
+                case WLXT.DownloadData.PageType.HOM_WK_BRW_0:
+                    WLXTUtils.dlHelper[pageType.id].kczyHwDir = WLXTUtils.dlHelper[pageType.id].kczyDir.clone();
+                    WLXTUtils.dlHelper[pageType.id].kczyHwDir.append(pageType.hwId);
+                    WLXTUtils.dlHelper[pageType.id].kczyHwDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+
+                    var outFile = WLXTUtils.dlHelper[pageType.id].kczyHwDir.clone();
+                    outFile.append("neirong.html");
+                    outFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+
+                    var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+                    foStream.init(outFile, -1, parseInt("0600", 8), 0);
+                    var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+                    converter.init(foStream, "UTF-8", 0, 0);
+
+                    var hwInfo = aEvent.target.getElementById("table_box");
+                    converter.writeString(hwInfo.innerHTML);
+
+                    converter.close();
+
+                    document.dispatchEvent(new Event("kczyDl"));
+                    aEvent.target.defaultView.close();
+                    var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+                    domWindowUtils.garbageCollect();
+                    break;
+
+                case WLXT.DownloadData.PageType.HOM_WK_BRW_1:
+                    var outFile = WLXTUtils.dlHelper[pageType.id].kczyHwDir.clone();
+                    outFile.append("piyue.html");
+                    outFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+
+                    var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+                    foStream.init(outFile, -1, parseInt("0600", 8), 0);
+                    var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+                    converter.init(foStream, "UTF-8", 0, 0);
+
+                    var hwInfo = aEvent.target.getElementById("table_box");
+                    converter.writeString(hwInfo.innerHTML);
+
+                    converter.close();
+
+                    document.dispatchEvent(new Event("kczyDl"));
                     aEvent.target.defaultView.close();
                     var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
                     domWindowUtils.garbageCollect();
@@ -652,15 +720,18 @@ document.addEventListener("kczyDl", function(aEvent) {
 
     switch(WLXTUtils.kczyList[WLXTUtils.kczyListInd].curPage) {
         case 0:
+            window.open(WLXTUtils.kczyList[WLXTUtils.kczyListInd].URL);
             WLXTUtils.kczyList[WLXTUtils.kczyListInd].curPage += 1;
             break;
 
         case 1:
+            window.open("http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/hom_wk_view.jsp?id=" + WLXTUtils.kczyList[WLXTUtils.kczyListInd].hwId + "&course_id=" + WLXTUtils.kczyList[WLXTUtils.kczyListInd].courseId);
             WLXTUtils.kczyList[WLXTUtils.kczyListInd].curPage += 1;
             break;
 
         default:
             WLXTUtils.kczyListInd += 1;
+            document.dispatchEvent(new Event("kczyDl"));
             break;
     }
 

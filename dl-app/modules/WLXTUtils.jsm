@@ -28,6 +28,7 @@ var WLXTUtils = {
          * 课程作业
          */
         this.kczyDir = null;
+        this.kczyHwDir = null;
     },
 
     /*
