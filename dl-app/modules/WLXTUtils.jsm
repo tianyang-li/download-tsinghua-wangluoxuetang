@@ -61,5 +61,9 @@ var WLXTUtils = {
     kczyList : null,
     kczyListInd : null,
 
+    kczyFiles : null,
+    kczyFilesInd : null,
+    kczyFilesWin : null,
+
 };
 

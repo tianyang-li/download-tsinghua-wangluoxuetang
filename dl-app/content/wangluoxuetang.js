@@ -541,6 +541,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                                 URL : hwRows[i].cells[0].getElementsByTagName("a")[0].href,
                                 courseId : courseId,
                                 hwId : hwId,
+                                secondPageDisabled : hwRows[i].cells[5].getElementsByTagName("input")[1].disabled,
 
                                 /*
                                  * there 2 pages to download from
@@ -582,15 +583,29 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
                     converter.close();
 
-                    document.dispatchEvent(new Event("kczyDl"));
-                    aEvent.target.defaultView.close();
-                    var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
-                    domWindowUtils.garbageCollect();
+                    WLXTUtils.kczyFiles = new Array(2);
+                    WLXTUtils.kczyFilesInd = 0;
+                    WLXTUtils.kczyFiles[0] = null;
+                    WLXTUtils.kczyFiles[1] = null;
+
+                    WLXTUtils.kczyFilesWin = aEvent.target.defaultView;
+
+                    var tableRows = hwInfo.getElementsByTagName("tr");
+                    var infoLink = tableRows[2].getElementsByTagName("a");
+                    if (infoLink.length != 0) {
+                        WLXTUtils.kczyFiles[0] = infoLink[0].href;
+                    }
+                    var hwLink = tableRows[5].getElementsByTagName("a");
+                    if (hwLink.length != 0) {
+                        WLXTUtils.kczyFiles[1] = hwLink[0].href;
+                    }
+
+                    document.dispatchEvent(new Event("kczyDlFiles"));
                     break;
 
                 case WLXT.DownloadData.PageType.HOM_WK_BRW_1:
                     var outFile = WLXTUtils.dlHelper[pageType.id].kczyHwDir.clone();
-                    outFile.append("piyue.html");
+                    outFile.append("pingyue.html");
                     outFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
 
                     var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
@@ -603,6 +618,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
                     converter.close();
 
+                    WLXTUtils.kczyListInd += 1;
                     document.dispatchEvent(new Event("kczyDl"));
                     aEvent.target.defaultView.close();
                     var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
@@ -714,7 +730,7 @@ document.addEventListener("kcwjDl", function(aEvent) {
 
 document.addEventListener("kczyDl", function(aEvent) {
     if (WLXTUtils.kczyListInd == WLXTUtils.kczyList.length) {
-        document.dispatchEvent(new Event("openCourse"));
+        //document.dispatchEvent(new Event("openCourse"));//XXX uncomment
         return;
     }
 
@@ -725,15 +741,57 @@ document.addEventListener("kczyDl", function(aEvent) {
             break;
 
         case 1:
-            window.open("http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/hom_wk_view.jsp?id=" + WLXTUtils.kczyList[WLXTUtils.kczyListInd].hwId + "&course_id=" + WLXTUtils.kczyList[WLXTUtils.kczyListInd].courseId);
-            WLXTUtils.kczyList[WLXTUtils.kczyListInd].curPage += 1;
+            if (!WLXTUtils.kczyList[WLXTUtils.kczyListInd].secondPageDisabled) {
+                window.open("http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/hom_wk_view.jsp?id=" + WLXTUtils.kczyList[WLXTUtils.kczyListInd].hwId + "&course_id=" + WLXTUtils.kczyList[WLXTUtils.kczyListInd].courseId);
+                WLXTUtils.kczyList[WLXTUtils.kczyListInd].curPage += 1;
+            } else {
+                WLXTUtils.kczyListInd += 1;
+                document.dispatchEvent(new Event("kczyDl"));
+            }
             break;
 
         default:
-            WLXTUtils.kczyListInd += 1;
-            document.dispatchEvent(new Event("kczyDl"));
             break;
     }
+}, false);
 
+document.addEventListener("kczyDlFiles", function(aEvent) {
+    if (WLXTUtils.kczyFilesInd < 2) {
+        if (WLXTUtils.kczyFiles[WLXTUtils.kczyFilesInd] != null) {
+            const WebBrowserPersist = Components.Constructor("@mozilla.org/embedding/browser/nsWebBrowserPersist;1", "nsIWebBrowserPersist");
+
+            var persist = WebBrowserPersist();
+
+            var dlFile = WLXTUtils.dlHelper[WLXTUtils.kczyList[WLXTUtils.kczyListInd].courseId].kczyHwDir.clone();
+            dlFile.append((WLXTUtils.kczyFilesInd == 0) ? "neirong" : "tijiao");
+
+            var privacy = PrivateBrowsingUtils.privacyContextFromWindow(WLXTUtils.kczyFilesWin);
+
+            var obj_URI = Services.io.newURI(WLXTUtils.kczyFiles[WLXTUtils.kczyFilesInd], null, null);
+
+            persist.progressListener = {
+                onProgressChange : function(aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress) {
+                    if (aCurTotalProgress == aMaxTotalProgress) {
+                        WLXTUtils.kczyFilesInd += 1;
+                        document.dispatchEvent(new Event("kczyDlFiles"));
+                    }
+                },
+
+                onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus) {
+                }
+            };
+
+            persist.saveURI(obj_URI, null, null, null, "", dlFile, privacy);
+        } else {
+            WLXTUtils.kczyFilesInd += 1;
+            document.dispatchEvent(new Event("kczyDlFiles"));
+        }
+
+    } else {
+        document.dispatchEvent(new Event("kczyDl"));
+        WLXTUtils.kczyFilesWin.close();
+        var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+        domWindowUtils.garbageCollect();
+    }
 }, false);
 
