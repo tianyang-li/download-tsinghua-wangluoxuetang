@@ -6,9 +6,7 @@
 xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 buttons="accept"
 buttonlabelaccept="OK">
-	<hbox>
-		<description>
-			&wlxt.feedback.message;
-		</description>
-	</hbox>
+    <hbox>
+        <description>&wlxt.feedback.message;</description>
+    </hbox>
 </dialog>

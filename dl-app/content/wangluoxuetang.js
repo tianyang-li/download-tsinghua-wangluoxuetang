@@ -23,7 +23,7 @@ WLXT.BrowserOverlay = {
     },
 
     startDownload : function(aEvent) {
-        WLXT.DownloadData.openLearn();
+        window.openDialog("chrome://wangluoxuetang/content/confirmStart.xul", "wlxt-confirm-start", "chrome,centerscreen");
     }
 };
 
