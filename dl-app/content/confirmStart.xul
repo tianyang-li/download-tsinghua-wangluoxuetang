@@ -17,12 +17,17 @@ ondialogaccept="WLXT.DownloadData.openLearn();">
 	</hbox>
 	<hbox>
 		<description>
+			下载期间可能图像上不会有任何变化, 但是只要不死机该工具都在正常运行, 不必担心.
+		</description>
+	</hbox>
+	<hbox>
+		<description>
 			另外该工具的安装会影响 Firefox 正常使用, 若不使用该工具关闭该窗口后 Shift+Ctrl+A disable 或者卸载.
 		</description>
 	</hbox>
 	<hbox>
-		<header>
+		<description>
 			重要: Firebug (如果安装过) 在运行该工具的过程中要 disable 或者删除, 关闭该窗口后 Shift+Ctrl+A 进行操作.
-		</header>
+		</description>
 	</hbox>
 </dialog>

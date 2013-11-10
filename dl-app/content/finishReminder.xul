@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="chrome://global/skin/global.css" type="text/css"?>
+<!DOCTYPE overlay SYSTEM
+"chrome://wangluoxuetang/locale/browserOverlay.dtd">
+<dialog id="wlxt-finish-reminder" title="下载结束"
+xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+buttons="accept"
+buttonlabelaccept="OK">
+	<hbox>
+		<description>
+			网络学堂下载结束, 关闭该窗口后 Shift+Ctrl+A 可以卸载该工具.
+		</description>
+	</hbox>
+	<hbox>
+		<description>
+			如果不卸载该工具, Firefox 正常使用将会受到影响.
+		</description>
+	</hbox>
+	<hbox>
+		<description>
+			如果有任何反馈可以联系李天阳 (&email-link;).
+		</description>
+	</hbox>
+</dialog>

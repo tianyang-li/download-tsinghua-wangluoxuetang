@@ -93,9 +93,9 @@ WLXT.DownloadData.PageType = {
 };
 
 WLXT.DownloadData.downloadClass = function(classDatum) {
-    //if (WLXTUtils.courseListInd == WLXTUtils.courseList.length) {
-    if (WLXTUtils.courseListInd == 5) {
-
+    if (WLXTUtils.courseListInd == WLXTUtils.courseList.length) {
+        window.openDialog("chrome://wangluoxuetang/content/finishReminder.xul", "wlxt-finish-reminder", "chrome,centerscreen");
+        return;
     }
 
     switch (WLXTUtils.downloadClassPage) {
@@ -735,9 +735,15 @@ WLXT.DownloadData.init = function() {
  * open learn.tsinghua.edu.cn in a new window
  */
 WLXT.DownloadData.openLearn = function() {
-    window.open("http://learn.tsinghua.edu.cn", "wlxt_login_window", WLXT.DownloadData.strWindowFeatures);
 
-    WLXTUtils.dlDir = FileUtils.getDir("DfltDwnld", ["wlxt"], true);
+    WLXTUtils.dlDir = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("DfltDwnld", Components.interfaces.nsIFile);
+    WLXTUtils.dlDir.append("wlxt");
+    if (WLXTUtils.dlDir.exists()) {
+        WLXTUtils.dlDir.remove(true);
+    }
+    WLXTUtils.dlDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+
+    window.open("http://learn.tsinghua.edu.cn", "wlxt_login_window", WLXT.DownloadData.strWindowFeatures);
 };
 
 window.addEventListener("load", function load(event) {
@@ -797,10 +803,7 @@ document.addEventListener("kcwjDl", function(aEvent) {
         }
     };
 
-    //persist.saveURI(obj_URI, null, null, null, "", dlFile, privacy);//XXX: uncomment
-    WLXTUtils.kcwjListInd += 1;
-    document.dispatchEvent(new Event("kcwjDl"));
-    //XXX:remove above lines
+    persist.saveURI(obj_URI, null, null, null, "", dlFile, privacy);
 
 }, false);
 
@@ -857,10 +860,7 @@ document.addEventListener("kczyDlFiles", function(aEvent) {
                 }
             };
 
-            //persist.saveURI(obj_URI, null, null, null, "", dlFile, privacy);//XXX:uncomment
-            WLXTUtils.kczyFilesInd += 1;
-            document.dispatchEvent(new Event("kczyDlFiles"));
-            //XXX: remove the 2 above lines
+            persist.saveURI(obj_URI, null, null, null, "", dlFile, privacy);
 
         } else {
             WLXTUtils.kczyFilesInd += 1;
