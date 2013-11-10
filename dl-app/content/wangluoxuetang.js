@@ -5,7 +5,7 @@
 
 Components.utils.import("resource://gre/modules/FileUtils.jsm");
 Components.utils.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
-Components.utils.import("resource://modules/WLXTUtils.jsm");
+Components.utils.import("resource://wlxt_modules/WLXTUtils.jsm");
 
 if ("undefined" == typeof (WLXT)) {
     var WLXT = {
