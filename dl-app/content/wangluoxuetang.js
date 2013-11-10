@@ -29,10 +29,9 @@ WLXT.BrowserOverlay = {
 
 WLXT.DownloadData = {
     /*
-    * TODO: use some better $strWindowFeatures?
-    */
-    //strWindowFeatures : "location=no",//XXX:
-    strWindowFeatures : "",
+     * TODO: use some better $strWindowFeatures?
+     */
+    strWindowFeatures : "location=no",
 
     /*
      * stores each class's information
@@ -78,6 +77,7 @@ WLXT.DownloadData.PageType = {
     HOM_WK_BRW_1 : 10,
     BBS_ID_STUDENT : 5,
     TALKID_STUDENT : 6,
+    TALKID_STUDENT_0 : 11,
     DISCUSS_MAIN : 7,
 
     /*
@@ -88,11 +88,16 @@ WLXT.DownloadData.PageType = {
     /*
      * IMPORTANT:
      * new const should start from
-     * 11
+     * 12
      */
 };
 
 WLXT.DownloadData.downloadClass = function(classDatum) {
+    //if (WLXTUtils.courseListInd == WLXTUtils.courseList.length) {
+    if (WLXTUtils.courseListInd == 5) {
+
+    }
+
     switch (WLXTUtils.downloadClassPage) {
 
         case 0:
@@ -170,7 +175,7 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
              * to get this
              *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/talk_list_student.jsp?bbs_id=${id}&course_id=${id}
              */
-
+            window.open("http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/gettalkid_student.jsp?course_id=" + classDatum.id);
             break;
 
         //case 7:
@@ -193,7 +198,6 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
     if (WLXTUtils.downloadClassPage == 6) {
         WLXTUtils.downloadClassPage = 0;
         WLXTUtils.courseListInd += 1;
-        //document.dispatchEvent(new Event("openCourse"));//XXX:add back this line
     }
 
 };
@@ -284,6 +288,14 @@ WLXT.DownloadData.checkCoursePageType = function(URL) {
     if (( regexExec = talkIDStudentRegex.exec(URL)) !== null) {
         pageType.type = WLXT.DownloadData.PageType.TALKID_STUDENT;
         pageType.id = regexExec.pop();
+        return pageType;
+    }
+
+    var talkIDStudentPostRegex = /http\:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/public\/bbs\/talk_reply_student\.jsp\?bbs_id\=\d+&course_id\=(\d+)&id\=(\d+)&rep_num\=\d+&up_url\=talk_list_student\.jsp&default_cate_id\=\d+/;
+    if (( regexExec = talkIDStudentPostRegex.exec(URL)) !== null) {
+        pageType.type = WLXT.DownloadData.PageType.TALKID_STUDENT_0;
+        pageType.id = regexExec[1];
+        pageType["discId"] = regexExec[2];
         return pageType;
     }
 
@@ -631,20 +643,79 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     domWindowUtils.garbageCollect();
                     break;
 
-                case WLXT.DownloadData.PageType.BBS_ID_STUDENT:
-                    break;
+                //case WLXT.DownloadData.PageType.BBS_ID_STUDENT:
+                //break;
+                /*
+                 * nobody uses this
+                 */
 
                 case WLXT.DownloadData.PageType.TALKID_STUDENT:
+                    var tbodyS = aEvent.target.getElementById("Layer1").getElementsByTagName("tbody");
+                    if (tbodyS.length == 2) {
+                        var discRows = tbodyS[1].rows;
+                        WLXTUtils.kctlList = new Array(discRows.length);
+                        WLXTUtils.kctlListInd = 0;
+
+                        WLXTUtils.dlHelper[pageType.id].kctlDir = WLXTUtils.dlHelper[pageType.id].dir.clone();
+                        WLXTUtils.dlHelper[pageType.id].kctlDir.append("kctl");
+                        WLXTUtils.dlHelper[pageType.id].kctlDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+
+                        var dlInfoFile = WLXTUtils.dlHelper[pageType.id].kctlDir.clone();
+                        dlInfoFile.append("kctl.csv");
+                        dlInfoFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+
+                        var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+                        foStream.init(dlInfoFile, -1, parseInt("0600", 8), 0);
+                        var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+                        converter.init(foStream, "UTF-8", 0, 0);
+
+                        for (var i = 0; i != discRows.length; ++i) {
+                            var discIdRegex = /bbs_id\=\d+&course_id\=\d+&id\=(\d+)&/;
+                            var discId = discIdRegex.exec(discRows[i].cells[0].getElementsByTagName("a")[0].href)[1];
+                            converter.writeString("\"" + discRows[i].cells[0].getElementsByTagName("a")[0].innerHTML.trim() + "\",\"" + discRows[i].cells[1].innerHTML + "\",\"" + discRows[i].cells[2].innerHTML + "\",\"" + discRows[i].cells[3].innerHTML + "\",\"" + discId + "\"\n");
+                            WLXTUtils.kctlList[i] = discRows[i].cells[0].getElementsByTagName("a")[0].href;
+                        }
+
+                        converter.close();
+
+                        document.dispatchEvent(new Event("kctlDl"));
+                    } else {
+                        document.dispatchEvent(new Event("openCourse"));
+                    }
+                    aEvent.target.defaultView.close();
+                    var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+                    domWindowUtils.garbageCollect();
                     break;
 
-                case WLXT.DownloadData.PageType.DISCUSS_MAIN:
+                case WLXT.DownloadData.PageType.TALKID_STUDENT_0:
+                    var discFile = WLXTUtils.dlHelper[pageType.id].kctlDir.clone();
+                    discFile.append(pageType.discId + ".html");
+                    discFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+
+                    var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+                    foStream.init(discFile, -1, parseInt("0600", 8), 0);
+                    var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+                    converter.init(foStream, "UTF-8", 0, 0);
+
+                    converter.writeString(aEvent.target.body.innerHTML);
+
+                    converter.close();
+
+                    document.dispatchEvent(new Event("kctlDl"));
+
+                    aEvent.target.defaultView.close();
+                    var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+                    domWindowUtils.garbageCollect();
+
                     break;
+
+                //case WLXT.DownloadData.PageType.DISCUSS_MAIN:
+                //break;
+                /*
+                 * nobody uses this
+                 */
 
                 default:
-
-                    //XXX remove this
-                    Application.console.log(aEvent.target.URL);
-
                     break;
 
             }
@@ -802,5 +873,14 @@ document.addEventListener("kczyDlFiles", function(aEvent) {
         var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
         domWindowUtils.garbageCollect();
     }
+}, false);
+
+document.addEventListener("kctlDl", function(aEvent) {
+    if (WLXTUtils.kctlListInd == WLXTUtils.kctlList.length) {
+        document.dispatchEvent(new Event("openCourse"));
+        return;
+    }
+    window.open(WLXTUtils.kctlList[WLXTUtils.kctlListInd]);
+    WLXTUtils.kctlListInd += 1;
 }, false);
 

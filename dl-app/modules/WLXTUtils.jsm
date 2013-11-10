@@ -29,6 +29,8 @@ var WLXTUtils = {
          */
         this.kczyDir = null;
         this.kczyHwDir = null;
+
+        this.kctlDir = null;
     },
 
     /*
@@ -64,6 +66,9 @@ var WLXTUtils = {
     kczyFiles : null,
     kczyFilesInd : null,
     kczyFilesWin : null,
+
+    kctlList : null,
+    kctlListInd : null,
 
 };
 
