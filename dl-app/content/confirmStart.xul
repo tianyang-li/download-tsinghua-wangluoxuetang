@@ -17,7 +17,7 @@ ondialogaccept="WLXT.DownloadData.openLearn();">
 	</hbox>
 	<hbox>
 		<description>
-			下载期间可能图像上不会有任何变化, 但是只要不死机该工具都在正常运行, 不必担心.
+			下载期间可能图像上不会有任何变化, 并且窗口会频繁打开和关闭, 但是只要不死机该工具都在正常运行, 不必担心.
 		</description>
 	</hbox>
 	<hbox>

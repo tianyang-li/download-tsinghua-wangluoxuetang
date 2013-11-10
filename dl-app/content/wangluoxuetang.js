@@ -3,7 +3,6 @@
  * ty@li-tianyang.com
  */
 
-Components.utils.import("resource://gre/modules/FileUtils.jsm");
 Components.utils.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
 Components.utils.import("resource://wlxt_modules/WLXTUtils.jsm");
 
@@ -318,9 +317,21 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
         // only for exact matches
         case "http://learn.tsinghua.edu.cn/":
-            /*
-             * change DOM of WLXT login page
-             */
+
+            WLXTUtils.dlDir = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("DfltDwnld", Components.interfaces.nsIFile);
+            WLXTUtils.dlDir.append("wlxt");
+            if (WLXTUtils.dlDir.exists()) {
+                WLXTUtils.dlDir.remove(true);
+            }
+            WLXTUtils.dlDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+
+            var dlNotice = aEvent.target.getElementsByClassName("td1")[0];
+            dlNotice.innerHTML = "<div>这个工具运行的时间会比较长而且在运行过程中无法使用 Firefox, 不使用 Firefox 的时候才能下载.</div>";
+            dlNotice.innerHTML += "<hr><div>下载期间可能图像上不会有任何变化, 并且窗口会频繁打开和关闭, 但是只要不死机该工具都在正常运行, 不必担心.</div>";
+            dlNotice.innerHTML += "<hr><div>另外该工具的安装会影响 Firefox 正常使用, 若不使用该工具关闭该窗口后 Shift+Ctrl+A disable 或者卸载.</div>";
+            dlNotice.innerHTML += "<hr><div>重要: Firebug (如果安装过) 在运行该工具的过程中要 disable 或者删除, 关闭该窗口后 Shift+Ctrl+A 进行操作.</div>";
+            dlNotice.innerHTML += "<hr><div>若有任何疑问, 可以发邮件联系李天阳 (<a href=\"mailto:ty@li-tianyang.com\">ty@li-tianyang.com</a>).</div>";
+
             var loginTableBody = aEvent.target.getElementsByTagName('body')[0].getElementsByTagName('table')[4].getElementsByTagName('tbody')[0];
             var notifyUserCell = loginTableBody.insertRow(0).insertCell(0);
             notifyUserCell.innerHTML = '<strong style="color: red">下载网络学堂从这里登录</strong>';
@@ -735,13 +746,6 @@ WLXT.DownloadData.init = function() {
  * open learn.tsinghua.edu.cn in a new window
  */
 WLXT.DownloadData.openLearn = function() {
-
-    WLXTUtils.dlDir = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("DfltDwnld", Components.interfaces.nsIFile);
-    WLXTUtils.dlDir.append("wlxt");
-    if (WLXTUtils.dlDir.exists()) {
-        WLXTUtils.dlDir.remove(true);
-    }
-    WLXTUtils.dlDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
 
     window.open("http://learn.tsinghua.edu.cn", "wlxt_login_window", WLXT.DownloadData.strWindowFeatures);
 };
