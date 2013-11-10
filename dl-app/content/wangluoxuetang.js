@@ -30,7 +30,7 @@ WLXT.DownloadData = {
     /*
      * TODO: use some better $strWindowFeatures?
      */
-    strWindowFeatures : "location=no",
+    strWindowFeatures : "",
 
     /*
      * stores each class's information
