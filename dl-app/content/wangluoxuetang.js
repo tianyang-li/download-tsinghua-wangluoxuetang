@@ -148,18 +148,21 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
             window.open("http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/hom_wk_brw.jsp?course_id=" + classDatum.id);
             break;
 
+        //case 5:
+        /*
+        * 课程答疑
+        * open this
+        *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/getbbsid_student.jsp?course_id=${id}
+        * to get this
+        *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/bbs_list_student.jsp?bbs_id=${id}&course_id=${id}
+        */
+        /*
+        * nobody uses this
+        * we'll just skip over it
+        */
+        //break;
+
         case 5:
-            /*
-             * 课程答疑
-             * open this
-             *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/getbbsid_student.jsp?course_id=${id}
-             * to get this
-             *     http://learn.tsinghua.edu.cn/MultiLanguage/public/bbs/bbs_list_student.jsp?bbs_id=${id}&course_id=${id}
-             */
-
-            break;
-
-        case 6:
             /*
              * 课程讨论
              * open this
@@ -170,13 +173,16 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
 
             break;
 
-        case 7:
-            /*
-             * 自由讨论区
-             * http://learn.tsinghua.edu.cn/MultiLanguage/public/discuss/main.jsp?course_id=${id}
-             */
-
-            break;
+        //case 7:
+        /*
+        * 自由讨论区
+        * http://learn.tsinghua.edu.cn/MultiLanguage/public/discuss/main.jsp?course_id=${id}
+        */
+        /*
+        * nobody uses this
+        * we'll just skip over it
+        */
+        //break;
 
         default:
             break;
@@ -184,7 +190,7 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
 
     WLXTUtils.downloadClassPage += 1;
 
-    if (WLXTUtils.downloadClassPage == 8) {
+    if (WLXTUtils.downloadClassPage == 6) {
         WLXTUtils.downloadClassPage = 0;
         WLXTUtils.courseListInd += 1;
         //document.dispatchEvent(new Event("openCourse"));//XXX:add back this line
