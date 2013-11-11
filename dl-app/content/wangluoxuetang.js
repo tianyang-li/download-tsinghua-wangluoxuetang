@@ -662,7 +662,15 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
                 case WLXT.DownloadData.PageType.TALKID_STUDENT:
                     var tbodyS = aEvent.target.getElementById("Layer1").getElementsByTagName("tbody");
-                    if (tbodyS.length == 2 && pageType.id != "86947") {
+                    if (tbodyS.length == 2 &&
+
+                    /*
+                     * 文化素质讲座
+                     * 课程讨论
+                     * javascript injection problems
+                     */
+                    pageType.id != "86947") {
+
                         var discRows = tbodyS[1].rows;
                         WLXTUtils.kctlList = new Array(discRows.length);
                         WLXTUtils.kctlListInd = 0;
