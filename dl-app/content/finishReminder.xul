@@ -6,19 +6,18 @@
 xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 buttons="accept"
 buttonlabelaccept="OK">
-	<hbox>
-		<description>
-			网络学堂下载结束, 关闭该窗口后 Shift+Ctrl+A 可以卸载该工具.
-		</description>
-	</hbox>
-	<hbox>
-		<description>
-			如果不卸载该工具, Firefox 正常使用将会受到影响.
-		</description>
-	</hbox>
-	<hbox>
-		<description>
-			如果有任何反馈可以联系李天阳 (&email-link;).
-		</description>
-	</hbox>
+    <hbox>
+        <description>网络学堂下载结束, 关闭该窗口后 Shift+Ctrl+A 可以卸载该工具.</description>
+    </hbox>
+    <hbox>
+        <description>如果不卸载该工具, Firefox 正常使用将会受到影响.</description>
+    </hbox>
+    <hbox>
+        <description>
+            <label class="text-link" href="http://li-tianyang.com/2013/11/10/download-tsinghua-wangluoxuetang/">http://li-tianyang.com/2013/11/10/download-tsinghua-wangluoxuetang/</label> 了解下载下来的文件和目录名是什么.
+        </description>
+    </hbox>
+    <hbox>
+        <description>如果有任何反馈可以联系李天阳 (&email-link;).</description>
+    </hbox>
 </dialog>

@@ -9,4 +9,9 @@ buttonlabelaccept="OK">
     <hbox>
         <description>&wlxt.seek-help.message;</description>
     </hbox>
+    <hbox>
+        <description>
+            <label class="text-link" href="http://li-tianyang.com/2013/11/10/download-tsinghua-wangluoxuetang/">http://li-tianyang.com/2013/11/10/download-tsinghua-wangluoxuetang/</label> 了解更多帮助内容.
+        </description>
+    </hbox>
 </dialog>
