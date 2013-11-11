@@ -662,7 +662,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
                 case WLXT.DownloadData.PageType.TALKID_STUDENT:
                     var tbodyS = aEvent.target.getElementById("Layer1").getElementsByTagName("tbody");
-                    if (tbodyS.length == 2) {
+                    if (tbodyS.length == 2 && pageType.id != "86947") {
                         var discRows = tbodyS[1].rows;
                         WLXTUtils.kctlList = new Array(discRows.length);
                         WLXTUtils.kctlListInd = 0;
