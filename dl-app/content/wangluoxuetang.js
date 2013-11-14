@@ -805,6 +805,8 @@ document.addEventListener("kcwjDl", function(aEvent) {
 
     persist.progressListener = {
         onProgressChange : function(aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress) {
+            Application.console.log(WLXTUtils.kcwjList[WLXTUtils.kcwjListInd] + " " + (aCurTotalProgress / aMaxTotalProgress).toString());
+
             if (aCurTotalProgress == aMaxTotalProgress) {
                 WLXTUtils.kcwjListInd += 1;
                 document.dispatchEvent(new Event("kcwjDl"));
@@ -862,6 +864,8 @@ document.addEventListener("kczyDlFiles", function(aEvent) {
 
             persist.progressListener = {
                 onProgressChange : function(aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress) {
+                    Application.console.log(WLXTUtils.kczyFiles[WLXTUtils.kczyFilesInd] + " " + (aCurTotalProgress / aMaxTotalProgress).toString());
+
                     if (aCurTotalProgress == aMaxTotalProgress) {
                         WLXTUtils.kczyFilesInd += 1;
                         document.dispatchEvent(new Event("kczyDlFiles"));
