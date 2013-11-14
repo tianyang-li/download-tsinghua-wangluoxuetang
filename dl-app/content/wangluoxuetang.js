@@ -809,6 +809,10 @@ document.addEventListener("kcwjDl", function(aEvent) {
 
             if (aCurTotalProgress == aMaxTotalProgress) {
                 WLXTUtils.kcwjListInd += 1;
+
+                var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+                domWindowUtils.garbageCollect();
+
                 document.dispatchEvent(new Event("kcwjDl"));
             }
         },
@@ -868,6 +872,10 @@ document.addEventListener("kczyDlFiles", function(aEvent) {
 
                     if (aCurTotalProgress == aMaxTotalProgress) {
                         WLXTUtils.kczyFilesInd += 1;
+
+                        var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+                        domWindowUtils.garbageCollect();
+
                         document.dispatchEvent(new Event("kczyDlFiles"));
                     }
                 },
