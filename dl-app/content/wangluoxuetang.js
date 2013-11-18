@@ -308,6 +308,14 @@ WLXT.DownloadData.checkCoursePageType = function(URL) {
     return pageType;
 };
 
+WLXT.DownloadData.REFRESH_SESSION_COOKIE_TIME = 5 * 60 * 1000;
+
+WLXT.DownloadData.refreshSessionCookie = function() {
+    Application.console.log("WLXT: try to refresh cookie");
+    window.open("http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/MyCourse.jsp?typepage=1");
+    window.setTimeout(WLXT.DownloadData.refreshSessionCookie, WLXT.DownloadData.REFRESH_SESSION_COOKIE_TIME);
+};
+
 WLXT.DownloadData.onPageLoad = function(aEvent) {
 
     /*
@@ -339,6 +347,14 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
         case "http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/mainstudent.jsp":
             window.open("http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/MyCourse.jsp?typepage=2", "wlxt_list_window", WLXT.DownloadData.strWindowFeatures);
+            window.setTimeout(function() {
+                WLXT.DownloadData.refreshSessionCookie();
+            }, WLXT.DownloadData.REFRESH_SESSION_COOKIE_TIME);
+            var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+            domWindowUtils.garbageCollect();
+            break;
+
+        case "http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/MyCourse.jsp?typepage=1":
             aEvent.target.defaultView.close();
             var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
             domWindowUtils.garbageCollect();
