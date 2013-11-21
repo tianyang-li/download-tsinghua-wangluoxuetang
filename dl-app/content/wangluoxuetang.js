@@ -311,9 +311,7 @@ WLXT.DownloadData.checkCoursePageType = function(URL) {
 WLXT.DownloadData.REFRESH_SESSION_COOKIE_TIME = 10 * 60 * 1000;
 
 WLXT.DownloadData.refreshSessionCookie = function() {
-    Application.console.log("WLXT: try to refresh cookie");
-    window.open("http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/MyCourse.jsp?typepage=1");
-    window.setTimeout(WLXT.DownloadData.refreshSessionCookie, WLXT.DownloadData.REFRESH_SESSION_COOKIE_TIME);
+    window.open("http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/MyCourse.jsp?typepage=3");
 };
 
 WLXT.DownloadData.onPageLoad = function(aEvent) {
@@ -347,7 +345,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
             break;
 
         case "http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/mainstudent.jsp":
-            window.setTimeout(function() {
+            aEvent.target.defaultView.setInterval(function() {
                 WLXT.DownloadData.refreshSessionCookie();
             }, WLXT.DownloadData.REFRESH_SESSION_COOKIE_TIME);
 
@@ -369,10 +367,12 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
             window.open("http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/MyCourse.jsp?typepage=2", "wlxt_list_window", WLXT.DownloadData.strWindowFeatures);
             break;
 
-        case "http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/MyCourse.jsp?typepage=1":
-            aEvent.target.defaultView.close();
-            var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
-            domWindowUtils.garbageCollect();
+        case "http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/MyCourse.jsp?typepage=3":
+            aEvent.target.defaultView.setTimeout(function() {
+                window.close();
+                var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+                domWindowUtils.garbageCollect();
+            }, 5 * 1000);
             break;
 
         case "http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/MyCourse.jsp?typepage=2":
