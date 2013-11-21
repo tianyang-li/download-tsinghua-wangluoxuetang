@@ -1,4 +1,4 @@
 #!/bin/bash
 
-firefox -no-remote -P dev &
+firefox -g -no-remote -P dev  
 

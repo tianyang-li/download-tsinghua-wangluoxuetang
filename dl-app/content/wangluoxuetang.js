@@ -308,7 +308,7 @@ WLXT.DownloadData.checkCoursePageType = function(URL) {
     return pageType;
 };
 
-WLXT.DownloadData.REFRESH_SESSION_COOKIE_TIME = 5 * 60 * 1000;
+WLXT.DownloadData.REFRESH_SESSION_COOKIE_TIME = 10 * 60 * 1000;
 
 WLXT.DownloadData.refreshSessionCookie = function() {
     Application.console.log("WLXT: try to refresh cookie");
@@ -336,6 +336,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
             var dlNotice = aEvent.target.getElementsByClassName("td1")[0];
             dlNotice.innerHTML = "<div>这个工具运行的时间会比较长而且在运行过程中无法使用 Firefox, 不使用 Firefox 的时候才能下载.</div>";
             dlNotice.innerHTML += "<hr><div>下载期间可能图像上不会有任何变化, 并且窗口会频繁打开和关闭, 但是只要不死机该工具都在正常运行, 不必担心.</div>";
+            dlNotice.innerHTML += "<hr><div>如果下载中发现下载进度长时间未改变, 可以打开<a href=\"http://learn.tsinghua.edu.cn\">learn.tsinghua.edu.cn</a>重新开始下载</div>";
             dlNotice.innerHTML += "<hr><div>另外该工具的安装会影响 Firefox 正常使用, 若不使用该工具关闭该窗口后 Shift+Ctrl+A disable 或者卸载.</div>";
             dlNotice.innerHTML += "<hr><div>重要: Firebug (如果安装过) 在运行该工具的过程中要 disable 或者删除, 关闭该窗口后 Shift+Ctrl+A 进行操作.</div>";
             dlNotice.innerHTML += "<hr><div>若有任何疑问, 可以发邮件联系李天阳 (<a href=\"mailto:ty@li-tianyang.com\">ty@li-tianyang.com</a>).</div>";
@@ -346,12 +347,26 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
             break;
 
         case "http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/mainstudent.jsp":
-            window.open("http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/MyCourse.jsp?typepage=2", "wlxt_list_window", WLXT.DownloadData.strWindowFeatures);
             window.setTimeout(function() {
                 WLXT.DownloadData.refreshSessionCookie();
             }, WLXT.DownloadData.REFRESH_SESSION_COOKIE_TIME);
+
             var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
             domWindowUtils.garbageCollect();
+
+            var userInfoDiv = aEvent.target.createElement("div");
+            var userInfo = "<div>这个工具运行的时间会比较长而且在运行过程中无法使用 Firefox, 不使用 Firefox 的时候才能下载.</div>";
+            userInfo += "<hr><div>下载期间可能图像上不会有任何变化, 并且窗口会频繁打开和关闭, 但是只要不死机该工具都在正常运行, 不必担心.</div>";
+            userInfo += "<hr><div>如果下载中发现下载进度长时间未改变, 可以打开<a href=\"http://learn.tsinghua.edu.cn\">learn.tsinghua.edu.cn</a>重新开始下载</div>";
+            userInfo += "<hr><div>另外该工具的安装会影响 Firefox 正常使用, 若不使用该工具关闭该窗口后 Shift+Ctrl+A disable 或者卸载.</div>";
+            userInfo += "<hr><div>重要: Firebug (如果安装过) 在运行该工具的过程中要 disable 或者删除, 关闭该窗口后 Shift+Ctrl+A 进行操作.</div>";
+            userInfo += "<hr><div>若有任何疑问, 可以发邮件联系李天阳 (<a href=\"mailto:ty@li-tianyang.com\">ty@li-tianyang.com</a>).</div>";
+            userInfoDiv.innerHTML = userInfo;
+            var box = aEvent.target.getElementById("box");
+            var parNode = box.parentNode;
+            parNode.insertBefore(userInfoDiv, box);
+
+            window.open("http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/MyCourse.jsp?typepage=2", "wlxt_list_window", WLXT.DownloadData.strWindowFeatures);
             break;
 
         case "http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/MyCourse.jsp?typepage=1":
@@ -532,6 +547,12 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
                     WLXTUtils.kcwjListWin = aEvent.target.defaultView;
 
+                    var dlProgress = WLXTUtils.kcwjListWin.document.createElement("div");
+                    dlProgress.setAttribute("id", "wlxt_dl_progress");
+                    var info_1 = WLXTUtils.kcwjListWin.document.getElementById("info_1");
+                    var parentDiv = info_1.parentNode;
+                    parentDiv.insertBefore(dlProgress, info_1);
+
                     document.dispatchEvent(new Event("kcwjDl"));
                     break;
 
@@ -644,6 +665,12 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                     if (hwLink.length != 0) {
                         WLXTUtils.kczyFiles[1] = hwLink[0].href;
                     }
+
+                    var dlProgress = WLXTUtils.kcwjListWin.document.createElement("div");
+                    dlProgress.setAttribute("id", "wlxt_dl_progress");
+                    var info_1 = WLXTUtils.kcwjListWin.document.getElementById("info_1");
+                    var parentDiv = info_1.parentNode;
+                    parentDiv.insertBefore(dlProgress, info_1);
 
                     document.dispatchEvent(new Event("kczyDlFiles"));
                     break;
@@ -819,10 +846,10 @@ document.addEventListener("kcwjDl", function(aEvent) {
 
     var obj_URI = Services.io.newURI(WLXTUtils.kcwjList[WLXTUtils.kcwjListInd], null, null);
 
+    var progressElement = WLXTUtils.kcwjListWin.document.getElementById("wlxt_dl_progress");
     persist.progressListener = {
         onProgressChange : function(aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress) {
-            Application.console.log(WLXTUtils.kcwjList[WLXTUtils.kcwjListInd] + " " + (aCurTotalProgress / aMaxTotalProgress).toString());
-
+            progressElement.innerHTML = WLXTUtils.kcwjList[WLXTUtils.kcwjListInd] + " " + (aCurTotalProgress / aMaxTotalProgress).toString();
             if (aCurTotalProgress == aMaxTotalProgress) {
                 WLXTUtils.kcwjListInd += 1;
 
@@ -882,10 +909,10 @@ document.addEventListener("kczyDlFiles", function(aEvent) {
 
             var obj_URI = Services.io.newURI(WLXTUtils.kczyFiles[WLXTUtils.kczyFilesInd], null, null);
 
+            var progressElement = WLXTUtils.kcwjListWin.document.getElementById("wlxt_dl_progress");
             persist.progressListener = {
                 onProgressChange : function(aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress) {
-                    Application.console.log(WLXTUtils.kczyFiles[WLXTUtils.kczyFilesInd] + " " + (aCurTotalProgress / aMaxTotalProgress).toString());
-
+                    progressElement.innerHTML = WLXTUtils.kczyFiles[WLXTUtils.kczyFilesInd] + " " + (aCurTotalProgress / aMaxTotalProgress).toString();
                     if (aCurTotalProgress == aMaxTotalProgress) {
                         WLXTUtils.kczyFilesInd += 1;
 
