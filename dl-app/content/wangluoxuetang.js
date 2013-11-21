@@ -666,9 +666,9 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                         WLXTUtils.kczyFiles[1] = hwLink[0].href;
                     }
 
-                    var dlProgress = WLXTUtils.kcwjListWin.document.createElement("div");
+                    var dlProgress = WLXTUtils.kczyFilesWin.document.createElement("div");
                     dlProgress.setAttribute("id", "wlxt_dl_progress");
-                    var info_1 = WLXTUtils.kcwjListWin.document.getElementById("info_1");
+                    var info_1 = WLXTUtils.kczyFilesWin.document.getElementById("info_1");
                     var parentDiv = info_1.parentNode;
                     parentDiv.insertBefore(dlProgress, info_1);
 
@@ -909,7 +909,7 @@ document.addEventListener("kczyDlFiles", function(aEvent) {
 
             var obj_URI = Services.io.newURI(WLXTUtils.kczyFiles[WLXTUtils.kczyFilesInd], null, null);
 
-            var progressElement = WLXTUtils.kcwjListWin.document.getElementById("wlxt_dl_progress");
+            var progressElement = WLXTUtils.kczyFilesWin.document.getElementById("wlxt_dl_progress");
             persist.progressListener = {
                 onProgressChange : function(aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress) {
                     progressElement.innerHTML = WLXTUtils.kczyFiles[WLXTUtils.kczyFilesInd] + " " + (aCurTotalProgress / aMaxTotalProgress).toString();
