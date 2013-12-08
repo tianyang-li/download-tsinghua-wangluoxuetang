@@ -4,6 +4,8 @@
  */
 
 Components.utils.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+
 Components.utils.import("resource://wlxt_modules/WLXTUtils.jsm");
 
 if ("undefined" == typeof (WLXT)) {
@@ -848,6 +850,8 @@ document.addEventListener("kcwjDl", function(aEvent) {
 
     var progressElement = WLXTUtils.kcwjListWin.document.getElementById("wlxt_dl_progress");
     persist.progressListener = {
+        QueryInterface : XPCOMUtils.generateQI([Components.interfaces.nsIWebProgressListener]),
+
         onProgressChange : function(aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress) {
             progressElement.textContent = WLXTUtils.kcwjList[WLXTUtils.kcwjListInd] + " " + (aCurTotalProgress / aMaxTotalProgress).toString();
             if (aCurTotalProgress == aMaxTotalProgress) {
@@ -861,6 +865,18 @@ document.addEventListener("kcwjDl", function(aEvent) {
         },
 
         onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus) {
+            if (!(aStateFlags & Components.interfaces.nsIWebProgressListener.STATE_STOP)) {
+                // not yet done.
+            }
+            // aWebProgress.progressListener = null;
+            // reset to avoid circular references -> leaks
+            if ((!Components.isSuccessCode(aStatus))
+            /* Some network or file related error happened */ || ( aRequest instanceof Components.interfaces.nsIHttpChannel && aRequest.responseStatus >= 400)
+            /*Some http related error happened.*/) {
+                var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+                domWindowUtils.garbageCollect();
+                document.dispatchEvent(new Event("kcwjDl"));
+            }
         }
     };
 
@@ -911,6 +927,8 @@ document.addEventListener("kczyDlFiles", function(aEvent) {
 
             var progressElement = WLXTUtils.kczyFilesWin.document.getElementById("wlxt_dl_progress");
             persist.progressListener = {
+                QueryInterface : XPCOMUtils.generateQI([Components.interfaces.nsIWebProgressListener]),
+
                 onProgressChange : function(aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress) {
                     progressElement.textContent = WLXTUtils.kczyFiles[WLXTUtils.kczyFilesInd] + " " + (aCurTotalProgress / aMaxTotalProgress).toString();
                     if (aCurTotalProgress == aMaxTotalProgress) {
@@ -924,6 +942,18 @@ document.addEventListener("kczyDlFiles", function(aEvent) {
                 },
 
                 onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus) {
+                    if (!(aStateFlags & Components.interfaces.nsIWebProgressListener.STATE_STOP)) {
+                        // not yet done.
+                    }
+                    // aWebProgress.progressListener = null;
+                    // reset to avoid circular references -> leaks
+                    if ((!Components.isSuccessCode(aStatus))
+                    /* Some network or file related error happened */ || ( aRequest instanceof Components.interfaces.nsIHttpChannel && aRequest.responseStatus >= 400)
+                    /*Some http related error happened.*/) {
+                        var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+                        domWindowUtils.garbageCollect();
+                        document.dispatchEvent(new Event("kczyDlFiles"));
+                    }
                 }
             };
 
