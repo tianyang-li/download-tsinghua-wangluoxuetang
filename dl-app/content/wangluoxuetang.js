@@ -853,7 +853,8 @@ document.addEventListener("kcwjDl", function(aEvent) {
         QueryInterface : XPCOMUtils.generateQI([Components.interfaces.nsIWebProgressListener]),
 
         onProgressChange : function(aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress) {
-            progressElement.textContent = WLXTUtils.kcwjList[WLXTUtils.kcwjListInd] + " " + (aCurTotalProgress / aMaxTotalProgress).toString();
+            var date = new Date();
+            progressElement.textContent = date.toString() + " " + WLXTUtils.kcwjList[WLXTUtils.kcwjListInd] + " " + (aCurTotalProgress / aMaxTotalProgress).toString();
             if (aCurTotalProgress == aMaxTotalProgress) {
                 WLXTUtils.kcwjListInd += 1;
 
@@ -873,6 +874,7 @@ document.addEventListener("kcwjDl", function(aEvent) {
             if ((!Components.isSuccessCode(aStatus))
             /* Some network or file related error happened */ || ( aRequest instanceof Components.interfaces.nsIHttpChannel && aRequest.responseStatus >= 400)
             /*Some http related error happened.*/) {
+
                 var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
                 domWindowUtils.garbageCollect();
                 document.dispatchEvent(new Event("kcwjDl"));
@@ -930,7 +932,8 @@ document.addEventListener("kczyDlFiles", function(aEvent) {
                 QueryInterface : XPCOMUtils.generateQI([Components.interfaces.nsIWebProgressListener]),
 
                 onProgressChange : function(aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress) {
-                    progressElement.textContent = WLXTUtils.kczyFiles[WLXTUtils.kczyFilesInd] + " " + (aCurTotalProgress / aMaxTotalProgress).toString();
+                    var date = new Date();
+                    progressElement.textContent = date.toString() + " " + WLXTUtils.kczyFiles[WLXTUtils.kczyFilesInd] + " " + (aCurTotalProgress / aMaxTotalProgress).toString();
                     if (aCurTotalProgress == aMaxTotalProgress) {
                         WLXTUtils.kczyFilesInd += 1;
 
@@ -950,6 +953,7 @@ document.addEventListener("kczyDlFiles", function(aEvent) {
                     if ((!Components.isSuccessCode(aStatus))
                     /* Some network or file related error happened */ || ( aRequest instanceof Components.interfaces.nsIHttpChannel && aRequest.responseStatus >= 400)
                     /*Some http related error happened.*/) {
+
                         var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
                         domWindowUtils.garbageCollect();
                         document.dispatchEvent(new Event("kczyDlFiles"));
