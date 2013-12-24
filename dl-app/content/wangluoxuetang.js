@@ -835,18 +835,28 @@ document.addEventListener("kcwjDl", function(aEvent) {
     Task.spawn(function() {
         /*
          * download
-         */ let
-        list = yield
-        Downloads.getList(Downloads.ALL);
-
-    }).then(function() {
-        /*
-         * onFulfill
          */
-    }, function() {
+
+        var dlFile = WLXTUtils.dlHelper[courseId].kcwjDir.clone();
+        dlFile.append(fileId); 
+        yield Downloads.fetch(WLXTUtils.kczyFiles[WLXTUtils.kczyFilesInd], dlFile);
+
+        WLXTUtils.kcwjListInd += 1;
+
+        var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+        domWindowUtils.garbageCollect();
+
+        document.dispatchEvent(new Event("kcwjDl"));
+
+    }).then(null, function(e) {
         /*
          * onReject
          */
+
+        var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+        domWindowUtils.garbageCollect();
+        document.dispatchEvent(new Event("kcwjDl"));
+
     });
 
 }, false);
@@ -886,14 +896,27 @@ document.addEventListener("kczyDlFiles", function(aEvent) {
                 /*
                  * download
                  */
-            }).then(function() {
-                /*
-                 * onFulfill
-                 */
-            }, function() {
+
+                var dlFile = WLXTUtils.dlHelper[WLXTUtils.kczyList[WLXTUtils.kczyListInd].courseId].kczyHwDir.clone();
+                dlFile.append((WLXTUtils.kczyFilesInd == 0) ? "neirong" : "tijiao");
+                yield Downloads.fetch(WLXTUtils.kczyFiles[WLXTUtils.kczyFilesInd], dlFile);
+
+                WLXTUtils.kczyFilesInd += 1;
+
+                var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+                domWindowUtils.garbageCollect();
+
+                document.dispatchEvent(new Event("kczyDlFiles"));
+
+            }).then(null, function(e) {
                 /*
                  * onReject
                  */
+
+                var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+                domWindowUtils.garbageCollect();
+                document.dispatchEvent(new Event("kczyDlFiles"));
+
             });
 
         } else {
@@ -917,3 +940,4 @@ document.addEventListener("kctlDl", function(aEvent) {
     window.open(WLXTUtils.kctlList[WLXTUtils.kctlListInd]);
     WLXTUtils.kctlListInd += 1;
 }, false);
+
