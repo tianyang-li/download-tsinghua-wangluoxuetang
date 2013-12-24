@@ -837,9 +837,14 @@ document.addEventListener("kcwjDl", function(aEvent) {
          * download
          */
 
+        var idsRegex = /&course_id\=(\d+)&file_id\=(\d+)/;
+        var idsRegexExec = idsRegex.exec(WLXTUtils.kcwjList[WLXTUtils.kcwjListInd]);
+        var courseId = idsRegexExec[1];
+        var fileId = idsRegexExec[2];
+
         var dlFile = WLXTUtils.dlHelper[courseId].kcwjDir.clone();
-        dlFile.append(fileId); 
-        yield Downloads.fetch(WLXTUtils.kczyFiles[WLXTUtils.kczyFilesInd], dlFile);
+        dlFile.append(fileId);
+        yield Downloads.fetch(WLXTUtils.kcwjList[WLXTUtils.kcwjListInd], dlFile);
 
         WLXTUtils.kcwjListInd += 1;
 
@@ -856,7 +861,6 @@ document.addEventListener("kcwjDl", function(aEvent) {
         var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
         domWindowUtils.garbageCollect();
         document.dispatchEvent(new Event("kcwjDl"));
-
     });
 
 }, false);
@@ -916,7 +920,6 @@ document.addEventListener("kczyDlFiles", function(aEvent) {
                 var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
                 domWindowUtils.garbageCollect();
                 document.dispatchEvent(new Event("kczyDlFiles"));
-
             });
 
         } else {
