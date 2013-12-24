@@ -844,14 +844,41 @@ document.addEventListener("kcwjDl", function(aEvent) {
 
         var dlFile = WLXTUtils.dlHelper[courseId].kcwjDir.clone();
         dlFile.append(fileId);
-        yield Downloads.fetch(WLXTUtils.kcwjList[WLXTUtils.kcwjListInd], dlFile);
 
-        WLXTUtils.kcwjListInd += 1;
+        var list = yield Downloads.getList(Downloads.ALL);
 
-        var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
-        domWindowUtils.garbageCollect();
+        var progressElement = WLXTUtils.kcwjListWin.document.getElementById("wlxt_dl_progress");
+        var view = {
+            onDownloadAdded : function(download) {
+                progressElement.textContent = "Download started: " + download;
+            },
+            onDownloadChanged : function(download) {
+                var date = new Date();
+                progressElement.textContent = date.toString() + " Download in progress: " + download;
+            },
+            onDownloadRemoved : function(download) {
+                progressElement.textContent = "Download ended: " + download;
+            },
+        };
+        yield list.addView(view);
+        try {
+            var download = yield Downloads.createDownload({
+                source : WLXTUtils.kcwjList[WLXTUtils.kcwjListInd],
+                target : dlFile,
+            });
+            list.add(download);
+            download.start();
 
-        document.dispatchEvent(new Event("kcwjDl"));
+        } finally {
+            yield list.removeView(view);
+
+            WLXTUtils.kcwjListInd += 1;
+
+            var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+            domWindowUtils.garbageCollect();
+
+            document.dispatchEvent(new Event("kcwjDl"));
+        }
 
     }).then(null, function(e) {
         /*
@@ -903,14 +930,41 @@ document.addEventListener("kczyDlFiles", function(aEvent) {
 
                 var dlFile = WLXTUtils.dlHelper[WLXTUtils.kczyList[WLXTUtils.kczyListInd].courseId].kczyHwDir.clone();
                 dlFile.append((WLXTUtils.kczyFilesInd == 0) ? "neirong" : "tijiao");
-                yield Downloads.fetch(WLXTUtils.kczyFiles[WLXTUtils.kczyFilesInd], dlFile);
 
-                WLXTUtils.kczyFilesInd += 1;
+                var list = yield Downloads.getList(Downloads.ALL);
 
-                var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
-                domWindowUtils.garbageCollect();
+                var progressElement = WLXTUtils.kczyFilesWin.document.getElementById("wlxt_dl_progress");
+                var view = {
+                    onDownloadAdded : function(download) {
+                        progressElement.textContent = "Download started: " + download;
+                    },
+                    onDownloadChanged : function(download) {
+                        var date = new Date();
+                        progressElement.textContent = date.toString() + " Download in progress: " + download;
+                    },
+                    onDownloadRemoved : function(download) {
+                        progressElement.textContent = "Download ended: " + download;
+                    },
+                };
+                yield list.addView(view);
+                try {
+                    var download = yield Downloads.createDownload({
+                        source : WLXTUtils.kczyFiles[WLXTUtils.kczyFilesInd],
+                        target : dlFile,
+                    });
+                    list.add(download);
+                    download.start();
 
-                document.dispatchEvent(new Event("kczyDlFiles"));
+                } finally {
+                    yield list.removeView(view);
+
+                    WLXTUtils.kczyFilesInd += 1;
+
+                    var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+                    domWindowUtils.garbageCollect();
+
+                    document.dispatchEvent(new Event("kczyDlFiles"));
+                }
 
             }).then(null, function(e) {
                 /*
