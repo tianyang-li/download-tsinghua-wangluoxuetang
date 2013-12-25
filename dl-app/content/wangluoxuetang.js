@@ -318,6 +318,8 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
         // only for exact matches
         case "http://learn.tsinghua.edu.cn/":
+        case "https://learn.tsinghua.edu.cn/index.jsp":
+        case "https://learn.tsinghua.edu.cn/":
 
             WLXTUtils.dlDir = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("DfltDwnld", Components.interfaces.nsIFile);
             WLXTUtils.dlDir.append("wlxt");
@@ -861,24 +863,21 @@ document.addEventListener("kcwjDl", function(aEvent) {
             },
         };
         yield list.addView(view);
-        try {
-            var download = yield Downloads.createDownload({
-                source : WLXTUtils.kcwjList[WLXTUtils.kcwjListInd],
-                target : dlFile,
-            });
-            list.add(download);
-            download.start();
 
-        } finally {
-            yield list.removeView(view);
+        var download = yield Downloads.createDownload({
+            source : WLXTUtils.kcwjList[WLXTUtils.kcwjListInd],
+            target : dlFile,
+        });
+        list.add(download);
+        yield download.start();
+        yield list.removeView(view);
 
-            WLXTUtils.kcwjListInd += 1;
+        WLXTUtils.kcwjListInd += 1;
 
-            var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
-            domWindowUtils.garbageCollect();
+        var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+        domWindowUtils.garbageCollect();
 
-            document.dispatchEvent(new Event("kcwjDl"));
-        }
+        document.dispatchEvent(new Event("kcwjDl"));
 
     }).then(null, function(e) {
         /*
@@ -947,24 +946,21 @@ document.addEventListener("kczyDlFiles", function(aEvent) {
                     },
                 };
                 yield list.addView(view);
-                try {
-                    var download = yield Downloads.createDownload({
-                        source : WLXTUtils.kczyFiles[WLXTUtils.kczyFilesInd],
-                        target : dlFile,
-                    });
-                    list.add(download);
-                    download.start();
 
-                } finally {
-                    yield list.removeView(view);
+                var download = yield Downloads.createDownload({
+                    source : WLXTUtils.kczyFiles[WLXTUtils.kczyFilesInd],
+                    target : dlFile,
+                });
+                list.add(download);
+                yield download.start();
+                yield list.removeView(view);
 
-                    WLXTUtils.kczyFilesInd += 1;
+                WLXTUtils.kczyFilesInd += 1;
 
-                    var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
-                    domWindowUtils.garbageCollect();
+                var domWindowUtils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils);
+                domWindowUtils.garbageCollect();
 
-                    document.dispatchEvent(new Event("kczyDlFiles"));
-                }
+                document.dispatchEvent(new Event("kczyDlFiles"));
 
             }).then(null, function(e) {
                 /*
