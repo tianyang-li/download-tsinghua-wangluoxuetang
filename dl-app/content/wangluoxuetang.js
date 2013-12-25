@@ -852,14 +852,14 @@ document.addEventListener("kcwjDl", function(aEvent) {
         var progressElement = WLXTUtils.kcwjListWin.document.getElementById("wlxt_dl_progress");
         var view = {
             onDownloadAdded : function(download) {
-                progressElement.textContent = "Download started: " + download;
+                progressElement.textContent = "Download started: " + download.source.url + " " + download.target.path;
             },
             onDownloadChanged : function(download) {
                 var date = new Date();
-                progressElement.textContent = date.toString() + " Download in progress: " + download;
+                progressElement.textContent = date.toString() + " Download in progress: " + download.source.url + " " + download.target.path;
             },
             onDownloadRemoved : function(download) {
-                progressElement.textContent = "Download ended: " + download;
+                progressElement.textContent = "Download ended: " + download.source.url + " " + download.target.path;
             },
         };
         yield list.addView(view);
@@ -935,14 +935,14 @@ document.addEventListener("kczyDlFiles", function(aEvent) {
                 var progressElement = WLXTUtils.kczyFilesWin.document.getElementById("wlxt_dl_progress");
                 var view = {
                     onDownloadAdded : function(download) {
-                        progressElement.textContent = "Download started: " + download;
+                        progressElement.textContent = "Download started: " + download.source.url + " " + download.target.path;
                     },
                     onDownloadChanged : function(download) {
                         var date = new Date();
-                        progressElement.textContent = date.toString() + " Download in progress: " + download;
+                        progressElement.textContent = date.toString() + " Download in progress: " + download.source.url + " " + download.target.path;
                     },
                     onDownloadRemoved : function(download) {
-                        progressElement.textContent = "Download ended: " + download;
+                        progressElement.textContent = "Download ended: " + download.source.url + " " + download.target.path;
                     },
                 };
                 yield list.addView(view);
