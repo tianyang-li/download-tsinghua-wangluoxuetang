@@ -104,7 +104,9 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
             WLXTUtils.dlHelper[classDatum.id] = new WLXTUtils.ClassHelper();
             WLXTUtils.dlHelper[classDatum.id].dir = WLXTUtils.dlDir.clone();
             WLXTUtils.dlHelper[classDatum.id].dir.append(classDatum.id);
-            WLXTUtils.dlHelper[classDatum.id].dir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+            if (!WLXTUtils.dlHelper[classDatum.id].dir.exists()) {
+                WLXTUtils.dlHelper[classDatum.id].dir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+            }
 
             /*
              * TODO: this might change over the years
@@ -323,15 +325,14 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
             WLXTUtils.dlDir = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("DfltDwnld", Components.interfaces.nsIFile);
             WLXTUtils.dlDir.append("wlxt");
-            if (WLXTUtils.dlDir.exists()) {
-                WLXTUtils.dlDir.remove(true);
+            if (!WLXTUtils.dlDir.exists()) {
+                WLXTUtils.dlDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
             }
-            WLXTUtils.dlDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
 
             var dlNotice = aEvent.target.getElementsByClassName("td1")[0];
             dlNotice.innerHTML = "<div>这个工具运行的时间会比较长而且在运行过程中无法使用 Firefox, 不使用 Firefox 的时候才能下载.</div>";
             dlNotice.innerHTML += "<hr><div>下载期间可能图像上不会有任何变化, 并且窗口会频繁打开和关闭, 但是只要不死机该工具都在正常运行, 不必担心.</div>";
-            dlNotice.innerHTML += "<hr><div>如果下载中发现下载进度长时间未改变, 可以打开<a href=\"http://learn.tsinghua.edu.cn\">learn.tsinghua.edu.cn</a>重新开始下载</div>";
+            dlNotice.innerHTML += "<hr><div><strong>如果下载中发现下载进度长时间未改变, 可以打开<a href=\"http://learn.tsinghua.edu.cn\">learn.tsinghua.edu.cn</a>重新开始下载</strong></div>";
             dlNotice.innerHTML += "<hr><div>另外该工具的安装会影响 Firefox 正常使用, 若不使用该工具关闭该窗口后 Shift+Ctrl+A disable 或者卸载.</div>";
             dlNotice.innerHTML += "<hr><div>重要: Firebug (如果安装过) 在运行该工具的过程中要 disable 或者删除, 关闭该窗口后 Shift+Ctrl+A 进行操作.</div>";
             dlNotice.innerHTML += "<hr><div>若有任何疑问, 可以发邮件联系李天阳 (<a href=\"mailto:ty@li-tianyang.com\">ty@li-tianyang.com</a>).</div>";
@@ -353,7 +354,7 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
             var userInfoDiv = aEvent.target.createElement("div");
             userInfoDiv.innerHTML = "<div>这个工具运行的时间会比较长而且在运行过程中无法使用 Firefox, 不使用 Firefox 的时候才能下载.</div>";
             userInfoDiv.innerHTML += "<hr><div>下载期间可能图像上不会有任何变化, 并且窗口会频繁打开和关闭, 但是只要不死机该工具都在正常运行, 不必担心.</div>";
-            userInfoDiv.innerHTML += "<hr><div>如果下载中发现下载进度长时间未改变, 可以打开<a href=\"http://learn.tsinghua.edu.cn\">learn.tsinghua.edu.cn</a>重新开始下载</div>";
+            userInfoDiv.innerHTML += "<hr><div><strong>如果下载中发现下载进度长时间未改变, 可以打开<a href=\"http://learn.tsinghua.edu.cn\">learn.tsinghua.edu.cn</a>重新开始下载</strong></div>";
             userInfoDiv.innerHTML += "<hr><div>另外该工具的安装会影响 Firefox 正常使用, 若不使用该工具关闭该窗口后 Shift+Ctrl+A disable 或者卸载.</div>";
             userInfoDiv.innerHTML += "<hr><div>重要: Firebug (如果安装过) 在运行该工具的过程中要 disable 或者删除, 关闭该窗口后 Shift+Ctrl+A 进行操作.</div>";
             userInfoDiv.innerHTML += "<hr><div>若有任何疑问, 可以发邮件联系李天阳 (<a href=\"mailto:ty@li-tianyang.com\">ty@li-tianyang.com</a>).</div>";
@@ -382,7 +383,9 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
             var classDirFile = WLXTUtils.dlDir.clone();
             classDirFile.append("course_id.csv");
-            classDirFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+            if (!classDirFile.exists()) {
+                classDirFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+            }
 
             var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
             foStream.init(classDirFile, -1, parseInt("0600", 8), 0);
@@ -415,11 +418,15 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                 case WLXT.DownloadData.PageType.NOTE_ID:
                     WLXTUtils.dlHelper[pageType.id].kcggDir = WLXTUtils.dlHelper[pageType.id].dir.clone();
                     WLXTUtils.dlHelper[pageType.id].kcggDir.append("kcgg");
-                    WLXTUtils.dlHelper[pageType.id].kcggDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+                    if (!WLXTUtils.dlHelper[pageType.id].kcggDir.exists()) {
+                        WLXTUtils.dlHelper[pageType.id].kcggDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+                    }
 
                     var kcggCSV = WLXTUtils.dlHelper[pageType.id].kcggDir.clone();
                     kcggCSV.append("kcgg.csv");
-                    kcggCSV.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                    if (!kcggCSV.exists()) {
+                        kcggCSV.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                    }
 
                     var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
                     foStream.init(kcggCSV, -1, parseInt("0600", 8), 0);
@@ -459,7 +466,9 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
                     var noteFile = WLXTUtils.dlHelper[pageType.courseID].kcggDir.clone();
                     noteFile.append(pageType.id + ".html");
-                    noteFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                    if (!noteFile.exists()) {
+                        noteFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                    }
 
                     var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
                     foStream.init(noteFile, -1, parseInt("0600", 8), 0);
@@ -479,7 +488,10 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                 case WLXT.DownloadData.PageType.COURSE_INFO:
                     var infoFile = WLXTUtils.dlHelper[pageType.id].dir.clone();
                     infoFile.append(pageType.id + ".html");
-                    infoFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                    if (!infoFile.exists()) {
+                        infoFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                    }
+
                     var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
                     foStream.init(infoFile, -1, parseInt("0600", 8), 0);
                     var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
@@ -500,11 +512,15 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
                     WLXTUtils.dlHelper[pageType.id].kcwjDir = WLXTUtils.dlHelper[pageType.id].dir.clone();
                     WLXTUtils.dlHelper[pageType.id].kcwjDir.append("kcwj");
-                    WLXTUtils.dlHelper[pageType.id].kcwjDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+                    if (!WLXTUtils.dlHelper[pageType.id].kcwjDir.exists()) {
+                        WLXTUtils.dlHelper[pageType.id].kcwjDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+                    }
 
                     var dlInfoFile = WLXTUtils.dlHelper[pageType.id].kcwjDir.clone();
                     dlInfoFile.append("kcwj.csv");
-                    dlInfoFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                    if (!dlInfoFile.exists()) {
+                        dlInfoFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                    }
 
                     var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
                     foStream.init(dlInfoFile, -1, parseInt("0600", 8), 0);
@@ -560,7 +576,9 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
                     var dlFile = WLXTUtils.dlHelper[pageType.id].dir.clone();
                     dlFile.append("jxzy.html");
-                    dlFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                    if (!dlFile.exists()) {
+                        dlFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                    }
 
                     var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
                     foStream.init(dlFile, -1, parseInt("0600", 8), 0);
@@ -584,11 +602,15 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
                         WLXTUtils.dlHelper[pageType.id].kczyDir = WLXTUtils.dlHelper[pageType.id].dir.clone();
                         WLXTUtils.dlHelper[pageType.id].kczyDir.append("kczy");
-                        WLXTUtils.dlHelper[pageType.id].kczyDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+                        if (!WLXTUtils.dlHelper[pageType.id].kczyDir.exists()) {
+                            WLXTUtils.dlHelper[pageType.id].kczyDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+                        }
 
                         var dlInfoFile = WLXTUtils.dlHelper[pageType.id].kczyDir.clone();
                         dlInfoFile.append("kczy.csv");
-                        dlInfoFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                        if (!dlInfoFile.exists()) {
+                            dlInfoFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                        }
 
                         var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
                         foStream.init(dlInfoFile, -1, parseInt("0600", 8), 0);
@@ -636,11 +658,15 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                 case WLXT.DownloadData.PageType.HOM_WK_BRW_0:
                     WLXTUtils.dlHelper[pageType.id].kczyHwDir = WLXTUtils.dlHelper[pageType.id].kczyDir.clone();
                     WLXTUtils.dlHelper[pageType.id].kczyHwDir.append(pageType.hwId);
-                    WLXTUtils.dlHelper[pageType.id].kczyHwDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+                    if (!WLXTUtils.dlHelper[pageType.id].kczyHwDir.exists()) {
+                        WLXTUtils.dlHelper[pageType.id].kczyHwDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+                    }
 
                     var outFile = WLXTUtils.dlHelper[pageType.id].kczyHwDir.clone();
                     outFile.append("neirong.html");
-                    outFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                    if (!outFile.exists()) {
+                        outFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                    }
 
                     var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
                     foStream.init(outFile, -1, parseInt("0600", 8), 0);
@@ -681,7 +707,9 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                 case WLXT.DownloadData.PageType.HOM_WK_BRW_1:
                     var outFile = WLXTUtils.dlHelper[pageType.id].kczyHwDir.clone();
                     outFile.append("pingyue.html");
-                    outFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                    if (!outFile.exists()) {
+                        outFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                    }
 
                     var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
                     foStream.init(outFile, -1, parseInt("0600", 8), 0);
@@ -721,11 +749,15 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
 
                         WLXTUtils.dlHelper[pageType.id].kctlDir = WLXTUtils.dlHelper[pageType.id].dir.clone();
                         WLXTUtils.dlHelper[pageType.id].kctlDir.append("kctl");
-                        WLXTUtils.dlHelper[pageType.id].kctlDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+                        if (!WLXTUtils.dlHelper[pageType.id].kctlDir.exists()) {
+                            WLXTUtils.dlHelper[pageType.id].kctlDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+                        }
 
                         var dlInfoFile = WLXTUtils.dlHelper[pageType.id].kctlDir.clone();
                         dlInfoFile.append("kctl.csv");
-                        dlInfoFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                        if (!dlInfoFile.exists()) {
+                            dlInfoFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                        }
 
                         var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
                         foStream.init(dlInfoFile, -1, parseInt("0600", 8), 0);
@@ -756,7 +788,9 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
                 case WLXT.DownloadData.PageType.TALKID_STUDENT_0:
                     var discFile = WLXTUtils.dlHelper[pageType.id].kctlDir.clone();
                     discFile.append(pageType.discId + ".html");
-                    discFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                    if (!discFile.exists()) {
+                        discFile.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0600", 8));
+                    }
 
                     var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
                     foStream.init(discFile, -1, parseInt("0600", 8), 0);
@@ -868,6 +902,8 @@ document.addEventListener("kcwjDl", function(aEvent) {
             source : WLXTUtils.kcwjList[WLXTUtils.kcwjListInd],
             target : dlFile,
         });
+        download.tryToKeepPartialData = true;
+
         list.add(download);
         yield download.start();
         yield list.removeView(view);
@@ -951,6 +987,8 @@ document.addEventListener("kczyDlFiles", function(aEvent) {
                     source : WLXTUtils.kczyFiles[WLXTUtils.kczyFilesInd],
                     target : dlFile,
                 });
+                download.tryToKeepPartialData = true;
+
                 list.add(download);
                 yield download.start();
                 yield list.removeView(view);
