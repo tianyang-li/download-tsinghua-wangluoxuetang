@@ -327,6 +327,9 @@ WLXT.DownloadData.onPageLoad = function(aEvent) {
             WLXTUtils.dlDir.append("wlxt");
             if (!WLXTUtils.dlDir.exists()) {
                 WLXTUtils.dlDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
+            } else {
+                WLXTUtils.dlDir.remove(true);
+                WLXTUtils.dlDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, parseInt("0700", 8));
             }
 
             var dlNotice = aEvent.target.getElementsByClassName("td1")[0];
