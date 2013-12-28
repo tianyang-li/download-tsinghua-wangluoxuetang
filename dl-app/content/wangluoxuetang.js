@@ -305,7 +305,7 @@ WLXT.DownloadData.checkCoursePageType = function(URL) {
     return pageType;
 };
 
-WLXT.DownloadData.REFRESH_SESSION_COOKIE_TIME = 10 * 60 * 1000;
+WLXT.DownloadData.REFRESH_SESSION_COOKIE_TIME = 1 * 60 * 1000;
 
 WLXT.DownloadData.refreshSessionCookie = function() {
     window.open("http://learn.tsinghua.edu.cn/MultiLanguage/lesson/student/MyCourse.jsp?typepage=3");
