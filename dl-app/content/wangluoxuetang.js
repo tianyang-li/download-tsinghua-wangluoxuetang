@@ -100,10 +100,7 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
          * UNIX大本营
          */
         WLXTUtils.courseListInd += 1;
-    }
-
-    if (WLXTUtils.courseListInd == WLXTUtils.courseList.length) {
-        window.openDialog("chrome://wangluoxuetang/content/finishReminder.xul", "wlxt-finish-reminder", "chrome,centerscreen");
+        document.dispatchEvent("openCourse");
         return;
     }
 
@@ -858,6 +855,11 @@ window.addEventListener("load", function load(event) {
 }, false);
 
 document.addEventListener("openCourse", function(aEvent) {
+    if (WLXTUtils.courseListInd == WLXTUtils.courseList.length) {
+        window.openDialog("chrome://wangluoxuetang/content/finishReminder.xul", "wlxt-finish-reminder", "chrome,centerscreen");
+        return;
+    }
+
     WLXT.DownloadData.downloadClass(WLXTUtils.courseList[WLXTUtils.courseListInd]);
 }, false);
 
