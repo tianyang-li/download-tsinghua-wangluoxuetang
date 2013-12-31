@@ -100,7 +100,7 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
          * UNIX大本营
          */
         WLXTUtils.courseListInd += 1;
-        document.dispatchEvent("openCourse");
+        document.dispatchEvent(new Event("openCourse"));
         return;
     }
 
