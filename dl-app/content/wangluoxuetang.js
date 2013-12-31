@@ -93,6 +93,15 @@ WLXT.DownloadData.PageType = {
 };
 
 WLXT.DownloadData.downloadClass = function(classDatum) {
+
+    if (classDatum.id == "9281") {
+        /*
+         * do not process
+         * UNIX大本营
+         */
+        WLXTUtils.courseListInd += 1;
+    }
+
     if (WLXTUtils.courseListInd == WLXTUtils.courseList.length) {
         window.openDialog("chrome://wangluoxuetang/content/finishReminder.xul", "wlxt-finish-reminder", "chrome,centerscreen");
         return;
