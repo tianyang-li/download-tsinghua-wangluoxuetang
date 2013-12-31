@@ -104,6 +104,11 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
         return;
     }
 
+    var date = new Date();
+    Application.console.log(date.toString() + " " + classDatum.id);
+
+    WLXTUtils.downloadClassPage = 6;
+
     switch (WLXTUtils.downloadClassPage) {
 
         case 0:
@@ -196,9 +201,12 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
 
     WLXTUtils.downloadClassPage += 1;
 
+    WLXTUtils.downloadClassPage = 6;
+
     if (WLXTUtils.downloadClassPage == 6) {
         WLXTUtils.downloadClassPage = 0;
         WLXTUtils.courseListInd += 1;
+        document.dispatchEvent(new Event("openCourse"));
     }
 
 };
