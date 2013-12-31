@@ -103,6 +103,8 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
         document.dispatchEvent("openCourse");
         return;
     }
+    
+    WLXTUtils.downloadClassPage = 6;
 
     switch (WLXTUtils.downloadClassPage) {
 
@@ -195,6 +197,8 @@ WLXT.DownloadData.downloadClass = function(classDatum) {
     }
 
     WLXTUtils.downloadClassPage += 1;
+    
+    WLXTUtils.downloadClassPage = 6;
 
     if (WLXTUtils.downloadClassPage == 6) {
         WLXTUtils.downloadClassPage = 0;
